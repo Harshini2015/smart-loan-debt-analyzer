@@ -6,84 +6,48 @@ const { askGroq } = require('../services/groqService');
 
 const router = express.Router();
 
-// Auto-seed or retrieve a family group for the current user
+// Retrieve a family group for the current user (create only self member if missing)
 router.get('/my-group', protect, async (req, res) => {
   try {
     let group = await FamilyGroup.findOne({ 'members.userId': req.user._id }).populate('members.userId', 'name email');
-    
+
+    // If group already exists, ensure we NEVER return other users seeded for a different login.
+    // Keep only members that belong to the current authenticated user.
+    // This prevents Rajesh/Aarav/Savitri showing up for users that should only see "(You)".
+    if (group && Array.isArray(group.members)) {
+      const onlySelf = group.members.filter((m) => {
+        const id = m.userId?._id || m.userId;
+        return id && id.toString() === req.user._id.toString();
+      });
+
+      // If the DB has legacy seeded members for this user, overwrite with just self.
+      if (onlySelf.length !== group.members.length) {
+        group.members = onlySelf;
+        group.sharedWallet = { balance: 0, transactions: [] };
+        await group.save();
+        group = await FamilyGroup.findById(group._id).populate('members.userId', 'name email');
+      }
+    }
+
+    // If no group exists yet, create only the logged-in user as the first member.
     if (!group) {
-      // Find or create beautiful mock family users to populate the ecosystem realistically
-      let spouse = await User.findOne({ email: 'spouse@smartloan.com' });
-      if (!spouse) {
-        spouse = await User.create({
-          name: 'Rajesh S',
-          email: 'spouse@smartloan.com',
-          password: 'password123',
-          role: 'user'
-        });
-      }
-
-      let child = await User.findOne({ email: 'child@smartloan.com' });
-      if (!child) {
-        child = await User.create({
-          name: 'Aarav S',
-          email: 'child@smartloan.com',
-          password: 'password123',
-          role: 'user'
-        });
-      }
-
-      let elder = await User.findOne({ email: 'elder@smartloan.com' });
-      if (!elder) {
-        elder = await User.create({
-          name: 'Savitri S',
-          email: 'elder@smartloan.com',
-          password: 'password123',
-          role: 'user'
-        });
-      }
-
-      // Build mock family structure
-      const mockMembers = [
-        {
-          userId: req.user._id,
-          role: 'parent',
-          nickname: `${req.user.name || 'Harshini'} (You)`,
-          monthlyLimit: 5000,
-        },
-        {
-          userId: spouse._id,
-          role: 'parent',
-          nickname: 'Rajesh (Spouse)',
-          monthlyLimit: 3000
-        },
-        {
-          userId: child._id,
-          role: 'child',
-          nickname: 'Aarav (Son)',
-          monthlyLimit: 1200
-        },
-        {
-          userId: elder._id,
-          role: 'elder',
-          nickname: 'Savitri (Mother)',
-          monthlyLimit: 1500
-        }
-      ];
+      // Create an empty family ecosystem for the current user.
+      // Do NOT auto-seed other members (Rajesh/Aarav/Savitri) on first login.
+      const selfMember = {
+        userId: req.user._id,
+        role: 'parent',
+        nickname: `${req.user.name || 'Harshini'} (You)`,
+        monthlyLimit: 0,
+      };
 
       group = await FamilyGroup.create({
         groupName: `${req.user.name || 'Harshini'}'s Family Portfolio`,
         adminUserId: req.user._id,
-        members: mockMembers,
+        members: [selfMember],
         sharedWallet: {
-          balance: 8500.00,
-          transactions: [
-            { userId: req.user._id, amount: 10000, reason: 'Monthly deposit to family pool', date: new Date(Date.now() - 3600000 * 24) },
-            { userId: spouse._id, amount: -850, reason: 'Groceries & supermarket restocking', date: new Date(Date.now() - 3600000 * 12) },
-            { userId: child._id, amount: -120, reason: 'School project supplies & science kit', date: new Date(Date.now() - 3600000 * 6) },
-            { userId: elder._id, amount: -530, reason: 'Medicine monthly refill & cardiac screening', date: new Date(Date.now() - 3600000 * 2) }
-          ]
-        }
+          balance: 0,
+          transactions: [],
+        },
       });
 
       // Refetch populated
