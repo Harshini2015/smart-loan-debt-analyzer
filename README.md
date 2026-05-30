@@ -161,10 +161,4 @@ Computer Science Engineering Student
 Full Stack Developer | AI Enthusiast
 
 ---
-
-## 📜 License
-This project is for educational and portfolio purposes.
-
-
-Just tell 👍
 ```
