@@ -1,8 +1,8 @@
 import axios from "axios";
 
-// Always point to backend server
+// Always point to deployed backend server (no local fallback)
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL || "https://smart-loan-debt-analyzer.onrender.com/api",
   withCredentials: true,
 });
 

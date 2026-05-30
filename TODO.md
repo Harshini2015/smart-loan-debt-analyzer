@@ -1,0 +1,3 @@
+- [ ] Update `frontend/src/services/api.js` to remove localhost fallback and default to `https://smart-loan-debt-analyzer.onrender.com/api`
+- [ ] Verify there are zero `localhost` / `127.0.0.1` references in `frontend/`
+- [ ] If verification fails, locate remaining references and patch them
