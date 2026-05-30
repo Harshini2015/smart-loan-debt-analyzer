@@ -107,7 +107,7 @@ cp .env.example .env
 npm run dev
 ```
 
-Backend runs at **http://localhost:5000**
+Backend runs at **http://localhost:5000** (local development only)
 
 ### 3. Frontend setup
 
@@ -119,7 +119,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Frontend runs at **http://localhost:5173**
+Frontend runs at **http://localhost:5173** (local development only)
 
 ---
 
@@ -148,19 +148,19 @@ Do **not** commit `.env` files. Use the example templates:
 
 | Variable | Description |
 |----------|-------------|
-| `VITE_API_BASE_URL` | Backend API base URL (default `http://localhost:5000/api`) |
+| `VITE_API_BASE_URL` | Backend API base URL (default `https://smart-loan-debt-analyzer.onrender.com/api`) |
 
 ### MongoDB Atlas (deployment)
 
 1. Create a cluster and database user.
-2. **Network Access** → allow your server IP or `0.0.0.0/0` for cloud hosts.
+2. **Network Access** → allow your server IP (Render/host) or `0.0.0.0/0` (only if required) for cloud hosts.
 3. Copy the connection string into `MONGO_URI`.
 
 ---
 
 ## API overview
 
-Base URL: `http://localhost:5000/api`
+Base URL: `https://smart-loan-debt-analyzer.onrender.com/api`
 
 | Area | Examples |
 |------|----------|
@@ -180,7 +180,8 @@ Health check: `GET /api/health`
 
 - Set the same environment variables on your host (Render, Railway, VPS, etc.).
 - Use `NODE_ENV=production` so the backend uses MongoDB Atlas only (no local fallback).
-- Point the frontend `VITE_API_BASE_URL` to your deployed API URL before building (`npm run build`).
+- Ensure the frontend is configured with your deployed backend URL:
+  - `VITE_API_BASE_URL=https://smart-loan-debt-analyzer.onrender.com/api`
 - Never expose `GROQ_API_KEY` or `JWT_SECRET` in the frontend or in git.
 
 ---
