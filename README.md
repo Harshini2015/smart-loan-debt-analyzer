@@ -138,14 +138,6 @@ https://smart-loan-debt-analyzer.onrender.com/api
 
 ---
 
-## ⚠️ Security Notes
-- Never commit `.env` files
-- Never expose API keys in frontend
-- Store secrets only in deployment platforms
-- Rotate keys if exposed
-
----
-
 ## 📌 Future Improvements
 - Credit score prediction
 - AI financial planner enhancement
@@ -161,10 +153,3 @@ Computer Science Engineering Student
 Full Stack Developer | AI Enthusiast
 
 ---
-
-## 📜 License
-This project is for educational and portfolio purposes.
-
-
-Just tell 👍
-```
