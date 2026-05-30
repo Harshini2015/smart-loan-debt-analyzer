@@ -159,6 +159,3 @@ https://smart-loan-debt-analyzer.onrender.com/api
 Harshini S  
 Computer Science Engineering Student  
 Full Stack Developer | AI Enthusiast
-
----
-```
