@@ -149,6 +149,5 @@ https://smart-loan-debt-analyzer.onrender.com/api
 
 ## 👩‍💻 Author
 Harshini S  
-Computer Science Engineering Student  
 
 ---
