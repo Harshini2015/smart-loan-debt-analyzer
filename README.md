@@ -17,7 +17,7 @@ https://smart-loan-debt-analyzer.onrender.com
 ## ✨ Features
 
 - **Dashboard**: High-fidelity modern financial dashboard style overview with responsive cards, micro-animations, and visual metrics.
-- **Try Demo Mode**: Interactive demo scenario to pre-fill realistic parameters for a 28-year-old salaried employee named John.
+- **Tutorial & Video Onboarding**: Built-in visual tutorial player showing registration steps, configuration flows, and analyzer tools.
 - **Loan Management**: Track active loans, monthly EMIs, and overall repayment progress.
 - **Loan Simulation**: Compare loan configurations, tenure options, and interest burdens.
 - **Debt Stress Analysis**: Real-time Debt-to-Income (DTI) ratio tracking, stress severity categories, and mitigation suggestions.
@@ -29,24 +29,40 @@ https://smart-loan-debt-analyzer.onrender.com
 - **Expense Tracking**: Itemized breakdown for Rent, Food, Utilities, Transport, Wifi, and Insurance.
 - **Disposable Income Engine**: Identifies surplus headroom for budgeting security.
 - **Financial Health Score**: Score algorithm utilizing savings ratios, DTI values, and expense margins.
-- **Advisor PDF Report**: Fully redesigned 2-page PDF financial audit outlining deductions, outflows, simulated loan risks, and professional recommendations.
+- **In-App Financial Summary**: Real-time summary overview outlining deductions, outflows, surplus margins, and advisor observations.
 
 ---
 
 ## 📖 How To Use / User Guide
 
-Our application features an interactive step-by-step onboarding process to construct your financial profile:
+Our application features a step-by-step onboarding process to construct your financial profile:
 
 1. **Register/Login**: Set up a new secure profile. For quick testing, you can register as:
    - **Name**: John
    - **Email**: john@example.com
    - **Password**: John123
 2. **Salary Configuration**: Input your monthly Gross Salary. The system automatically computes your PF deduction (e.g. 12% of Gross) and subtracts Professional Tax (PT) and Income Tax (IT) to yield your exact **Net Take-Home Salary**.
+   - *Example*: Gross (₹60,000) - PF (₹7,200) - PT (₹200) - IT (₹2,000) = **₹50,600 Net Take-home**.
 3. **Expense Tracking**: Enter itemized core expenditures (Rent, Food, Transportation, Electricity, Internet, Insurance, etc.). The system aggregates these to display your total monthly outflows.
+   - *Example*: Rent (₹15k) + Food (₹6k) + Transport (₹2k) + Electricity (₹1.5k) + Internet (₹800) + Insurance (₹2k) + Other (₹3k) = **₹30,300 Total Expenses**.
 4. **Disposable Income**: Calculate your cash surplus (Net Salary - Total Expenses) to evaluate how much free cash remains for savings and investments.
+   - *Example*: ₹50,600 Net - ₹30,300 Expenses = **₹20,300 Disposable surplus**.
 5. **Loan Simulation**: Test target loan scenarios by specifying Principal, Interest Rate, and Tenure. The engine dynamically computes the monthly EMI and interest metrics.
+   - *Example*: Simulated bike loan of ₹2,00,000 at 10% for 36 months calculates the precise EMI, total payback, and interest rates.
 6. **Affordability Analysis**: Instantly checks if simulated EMIs are **Highly Affordable** (<=30% of disposable income), **Risky** (30%-50%), or **Not Affordable** (>50%).
-7. **Health Score & PDF**: Review your dynamic Financial Health score (Savings, Expense, and Debt ratios) and click **Export PDF Report** to download your multi-page advisor statement.
+7. **In-App Summary View**: Review your dynamic Financial Health score (Savings, Expense, and Debt ratios) and toggle the **In-App Financial Summary** view to see a detailed advisor breakdown directly on screen.
+
+---
+
+## 🎥 Video Tutorial Walkthrough
+
+Users can click the play button in the tutorial section to see a walk-through demonstration covering:
+- Creating a profile and landing on the main dashboard cards.
+- Configuring salary components and deduction variables.
+- Adding household outlays to compute disposable income.
+- Simulating a custom vehicle or personal loan.
+- Parsing stress indicators (DTI percentages) and evaluating health rankings.
+- Querying the AI Assistant to obtain tips on minimizing debts.
 
 ---
 
@@ -54,7 +70,7 @@ Our application features an interactive step-by-step onboarding process to const
 
 | Layer | Technologies |
 |------|-------------|
-| Frontend | React 18, Vite, Tailwind CSS, Axios, Recharts, Framer Motion, jsPDF |
+| Frontend | React 18, Vite, Tailwind CSS, Axios, Recharts, Framer Motion |
 | Backend | Node.js, Express.js |
 | Database | MongoDB Atlas (Mongoose) |
 | Authentication | JWT |

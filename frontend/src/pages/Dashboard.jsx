@@ -123,60 +123,6 @@ export default function Dashboard() {
     );
   }
 
-  // "Try Demo" mode pre-population handler
-  const handleTryDemo = async () => {
-    setSetupLoading(true);
-    // John's Demo Profile values
-    const demoPayload = {
-      grossSalary: 60000,
-      pfPercentage: 12,
-      professionalTax: 200,
-      incomeTax: 2000,
-      expenseRent: 15000,
-      expenseFood: 6000,
-      expenseTransport: 2000,
-      expenseElectricity: 1500,
-      internetExpense: 800, // mapped to expenseInternet in backend payload
-      expenseInternet: 800,
-      expenseInsurance: 2000,
-      expenseOther: 3000
-    };
-
-    try {
-      await dashboardService.updateFinancialInfo(demoPayload);
-      await fetchDashboardData();
-
-      // Pre-fill loan calculator with John's target bike loan
-      setEmiAmount('200000');
-      setEmiRate('10');
-      setEmiTenure('36');
-
-      // Programmatically trigger calculator
-      const principal = 200000;
-      const ratePerMonth = (10 / 12) / 100;
-      const months = 36;
-      const emiVal = (principal * ratePerMonth * Math.pow(1 + ratePerMonth, months)) / (Math.pow(1 + ratePerMonth, months) - 1);
-      const totalRepay = emiVal * months;
-      const totalInterest = totalRepay - principal;
-      setCalcResult({
-        emi: parseFloat(emiVal.toFixed(2)),
-        totalInterest: parseFloat(totalInterest.toFixed(2)),
-        totalRepay: parseFloat(totalRepay.toFixed(2))
-      });
-
-      window.dispatchEvent(new CustomEvent('add-notification', {
-        detail: {
-          text: `📊 Successfully injected John's (28, Salaried) Demo Profile data!`,
-          textKn: `📊 ಡೆಮೊ ಪ್ರೊಫೈಲ್ ಡೇಟಾವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಲೋಡ್ ಮಾಡಲಾಗಿದೆ!`
-        }
-      }));
-    } catch (err) {
-      console.error('Failed to update demo profile:', err);
-    } finally {
-      setSetupLoading(false);
-    }
-  };
-
   // Handle updates to financial config
   const handleSaveFinancials = async (e) => {
     e.preventDefault();
@@ -289,195 +235,8 @@ export default function Dashboard() {
     { name: 'Other', value: other, color: '#6b7280' }
   ].filter(item => item.value > 0);
 
-  // Redesigned PDF report downloader (Advisor layout)
-  const downloadPDFReport = () => {
-    const doc = new jsPDF();
-    
-    // Top banner header with title
-    doc.setFillColor(79, 70, 229); // Indigo theme color
-    doc.rect(0, 0, 210, 40, 'F');
-
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(22);
-    doc.setFont('helvetica', 'bold');
-    doc.text('SMART DEBT ANALYZER & ADVISOR REPORT', 15, 20);
-    
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Personalized Financial Health Audit and Risk Assessment', 15, 30);
-
-    // Metadata section
-    doc.setTextColor(15, 23, 42);
-    doc.setFontSize(10);
-    doc.text(`Client Name: ${user?.name || 'Valued User'}`, 15, 52);
-    doc.text(`Audit Date: ${new Date().toLocaleDateString('en-IN')}`, 15, 58);
-    doc.text(`Rating: ${healthLabel} (${healthScore}/100)`, 15, 64);
-    
-    // Horizontal divider
-    doc.setDrawColor(226, 232, 240);
-    doc.line(15, 70, 195, 70);
-
-    // Section 1: Financial Health & Recommendations
-    doc.setFontSize(13);
-    doc.setFont('helvetica', 'bold');
-    doc.text('I. Financial Health Score Rating', 15, 80);
-    
-    doc.setFillColor(248, 250, 252);
-    doc.rect(15, 85, 180, 26, 'F');
-    doc.rect(15, 85, 180, 26, 'S');
-    
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'bold');
-    doc.text(`Score: ${healthScore} / 100`, 20, 93);
-    doc.setFont('helvetica', 'normal');
-    doc.text(`Savings Ratio: ${savingsRatio.toFixed(1)}%   |   Expense Ratio: ${expenseRatio.toFixed(1)}%   |   EMI Burden: ${emiBurden.toFixed(1)}%`, 20, 103);
-
-    // Section 2: Salary Structure Details
-    doc.setFontSize(13);
-    doc.setFont('helvetica', 'bold');
-    doc.text('II. Salary Component Breakdown', 15, 122);
-    
-    let yPos = 129;
-    doc.setFont('helvetica', 'normal');
-    const salaryRows = [
-      ['Gross Income', formatCurrency(gross)],
-      [`Provident Fund (PF @ ${pfPct}%)`, `-${formatCurrency(pfAmt)}`],
-      ['Professional Tax (PT)', `-${formatCurrency(pt)}`],
-      ['Income Tax (IT)', `-${formatCurrency(it)}`],
-      ['Net Take-Home Salary', formatCurrency(net)]
-    ];
-
-    salaryRows.forEach(([label, value], idx) => {
-      if (idx === 4) doc.setFont('helvetica', 'bold');
-      doc.text(label, 15, yPos);
-      doc.text(value, 150, yPos);
-      doc.line(15, yPos + 2, 195, yPos + 2);
-      yPos += 8;
-    });
-
-    // Section 3: Expense Category Breakdown
-    doc.setFontSize(13);
-    doc.setFont('helvetica', 'bold');
-    doc.text('III. Monthly Itemized Outflows', 15, yPos + 5);
-    
-    yPos += 12;
-    const expenseRows = [
-      ['Housing Rent', formatCurrency(rent)],
-      ['Food & Grocery Outlays', formatCurrency(food)],
-      ['Transport & Fuel Costs', formatCurrency(transport)],
-      ['Utility/Electricity Bills', formatCurrency(electricity)],
-      ['Wifi & Internet Subscriptions', formatCurrency(internet)],
-      ['Insurance Premiums', formatCurrency(insurance)],
-      ['Other Discretionary Bills', formatCurrency(other)],
-      ['Total Core Expenditures', formatCurrency(totalExp)]
-    ];
-
-    expenseRows.forEach(([label, value], idx) => {
-      if (idx === 7) doc.setFont('helvetica', 'bold');
-      doc.text(label, 15, yPos);
-      doc.text(value, 150, yPos);
-      doc.line(15, yPos + 2, 195, yPos + 2);
-      yPos += 8;
-    });
-
-    // Section 4: Budget Surplus & Debt Capacity
-    doc.setFontSize(13);
-    doc.setFont('helvetica', 'bold');
-    doc.text('IV. Budget Surplus and Capacity Metrics', 15, yPos + 5);
-    
-    yPos += 12;
-    doc.setFont('helvetica', 'normal');
-    doc.text(`Monthly Surplus (Disposable Income): ${formatCurrency(dispIncome)}`, 15, yPos);
-    doc.text(`Total Active EMIs Liability: ${formatCurrency(totalEmi)}`, 15, yPos + 7);
-    const stressCat = dashboardData?.stressCategory || 'Healthy';
-    doc.text(`Stress Status: ${stressCat} (DTI Ratio at ${(dashboardData?.dtiPercent || 0).toFixed(1)}%)`, 15, yPos + 14);
-
-    // Section 5: Target Loan Scenario & Affordability
-    doc.setFontSize(13);
-    doc.setFont('helvetica', 'bold');
-    doc.text('V. Target Loan Scenario (Bike Loan Simulation)', 15, yPos + 26);
-    
-    yPos += 33;
-    doc.setFont('helvetica', 'normal');
-    if (calcResult) {
-      doc.text(`Simulated Loan Principal: ${formatCurrency(Number(emiAmount))}`, 15, yPos);
-      doc.text(`Annual Interest Rate: ${emiRate}%`, 15, yPos + 7);
-      doc.text(`Tenure: ${emiTenure} Months`, 15, yPos + 14);
-      doc.text(`Calculated Monthly EMI: ${formatCurrency(calcResult.emi)}`, 15, yPos + 21);
-      doc.text(`Total Repayment: ${formatCurrency(calcResult.totalRepay)} (Interest: ${formatCurrency(calcResult.totalInterest)})`, 15, yPos + 28);
-      
-      const percentOfDisp = dispIncome > 0 ? (calcResult.emi / dispIncome) * 100 : 100;
-      let statusStr = "Highly Affordable ✅";
-      if (percentOfDisp > 30 && percentOfDisp <= 50) {
-        statusStr = "Risky Leverage ⚠️";
-      } else if (percentOfDisp > 50) {
-        statusStr = "Not Affordable ❌";
-      }
-      doc.setFont('helvetica', 'bold');
-      doc.text(`Affordability Recommendation: ${statusStr} (EMI takes ${Math.round(percentOfDisp)}% of disposable income)`, 15, yPos + 37);
-      doc.setFont('helvetica', 'normal');
-      yPos += 45;
-    } else {
-      doc.text('No active loan simulation details available.', 15, yPos);
-      yPos += 10;
-    }
-
-    // Add a page break for Advisor Suggestions and charts summary
-    doc.addPage();
-    
-    // Header for page 2
-    doc.setFillColor(79, 70, 229);
-    doc.rect(0, 0, 210, 20, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(12);
-    doc.setFont('helvetica', 'bold');
-    doc.text('SMART DEBT ANALYZER & ADVISOR REPORT - Page 2', 15, 13);
-    
-    // Section 6: Advisor Suggestions
-    doc.setTextColor(15, 23, 42);
-    doc.setFontSize(13);
-    doc.text('VI. Financial Advisor Recommendations', 15, 35);
-    
-    doc.setFontSize(9.5);
-    doc.setFont('helvetica', 'normal');
-    let rec1 = '• Keep monthly expenses below 40% of net income to protect savings capability.';
-    let rec2 = '• Secure an emergency runway representing at least 6 months of baseline expenditures.';
-    let rec3 = '• Restrict combined loan payments (DTI ratio) below 30% to maintain buffer thresholds.';
-    
-    if (healthScore < 50) {
-      rec1 = '• CRITICAL: Expense ratio is high. Review discretionary spending and eliminate other overheads.';
-      rec2 = '• WARNING: Debt burden is elevated. Avoid taking new credit cards or unsecured loans.';
-    }
-
-    doc.text(rec1, 15, 45);
-    doc.text(rec2, 15, 51);
-    doc.text(rec3, 15, 57);
-
-    // Section 7: Analytics Overview
-    doc.setFontSize(13);
-    doc.setFont('helvetica', 'bold');
-    doc.text('VII. Financial Ratios Summary', 15, 72);
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.text(`- Savings Ratio: ${savingsRatio.toFixed(1)}% (Target: >= 30%)`, 15, 82);
-    doc.text(`- Expense Ratio: ${expenseRatio.toFixed(1)}% (Target: <= 30% core)`, 15, 89);
-    doc.text(`- EMI Burden: ${emiBurden.toFixed(1)}% (Target: <= 15% net salary)`, 15, 96);
-    doc.text(`- Current Financial Health Score: ${healthScore} / 100 (${healthLabel})`, 15, 103);
-
-    // Footer notice
-    doc.setFontSize(8);
-    doc.setTextColor(148, 163, 184);
-    doc.text('Report powered by Smart Loan & Debt Stress Engine. Subject to terms. Confidential.', 15, 285);
-
-    doc.save('financial-advisor-report.pdf');
-
-    window.dispatchEvent(new CustomEvent('add-notification', {
-      detail: {
-        text: `📥 Downloaded your PDF financial audit report successfully.`,
-        textKn: `📥 ನಿಮ್ಮ PDF ಹಣಕಾಸು ವರದಿಯನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾಗಿದೆ.`
-      }
-    }));
-  };
+  const [showInAppSummary, setShowInAppSummary] = useState(false);
+  const [isPlayingTutorial, setIsPlayingTutorial] = useState(false);
 
   return (
     <div className="space-y-8 pb-10 bg-slate-50 min-h-screen text-slate-800 font-sans leading-relaxed">
@@ -492,19 +251,11 @@ export default function Dashboard() {
             </span>
           </h1>
           <p className="text-slate-500 text-sm mt-1">
-            Analyze salary deductions, configure itemized tracking, check DTI metrics, and generate reports.
+            Analyze salary deductions, configure itemized tracking, check DTI metrics, and view real-time summaries.
           </p>
         </div>
 
         <div className="flex items-center gap-3 flex-wrap">
-          <button
-            onClick={handleTryDemo}
-            disabled={setupLoading}
-            className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-emerald-600/10 active:scale-95 transition-all cursor-pointer"
-          >
-            <Sparkles className="w-4 h-4" />
-            {setupLoading ? 'Loading Demo...' : 'Try Demo Mode'}
-          </button>
           <button
             onClick={() => setShowConfigModal(true)}
             className="flex items-center gap-2 px-5 py-2.5 bg-white hover:bg-slate-50 text-slate-700 rounded-xl text-sm font-semibold border border-slate-200 shadow active:scale-95 transition-all cursor-pointer"
@@ -513,14 +264,50 @@ export default function Dashboard() {
             Configure Finances
           </button>
           <button
-            onClick={downloadPDFReport}
+            onClick={() => setShowInAppSummary(!showInAppSummary)}
             className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold shadow-lg shadow-indigo-600/20 active:scale-95 transition-all cursor-pointer"
           >
-            <Download className="w-4 h-4" />
-            Export PDF Report
+            <FileText className="w-4 h-4" />
+            {showInAppSummary ? 'Hide Summary' : 'In-App Financial Summary'}
           </button>
         </div>
       </div>
+
+      {/* In-App Financial Summary Widget */}
+      {showInAppSummary && (
+        <div className="bg-white border-2 border-indigo-200 rounded-3xl p-6 shadow-xl space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+            <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5 text-indigo-600" />
+              In-App Financial Summary & Advisor Assessment
+            </h3>
+            <span className="text-xs bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full font-bold">Confidential Audit</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+            <div className="space-y-2">
+              <h4 className="font-bold text-slate-800">Deductions Summary</h4>
+              <p className="text-xs text-slate-600">Gross Salary: {formatCurrency(gross)}</p>
+              <p className="text-xs text-slate-600">Provident Fund (PF): {formatCurrency(pfAmt)} ({pfPct}%)</p>
+              <p className="text-xs text-slate-600">Professional Tax: {formatCurrency(pt)}</p>
+              <p className="text-xs text-slate-600">Income Tax: {formatCurrency(it)}</p>
+              <p className="text-xs font-bold text-indigo-600">Net Take-Home: {formatCurrency(net)}</p>
+            </div>
+            <div className="space-y-2">
+              <h4 className="font-bold text-slate-800">Expense Allocations</h4>
+              <p className="text-xs text-slate-600">Core Total: {formatCurrency(totalExp)}</p>
+              <p className="text-xs text-slate-600">Surplus Headroom: {formatCurrency(dispIncome)}</p>
+              <p className="text-xs text-slate-600">DTI Ratio: {(dashboardData?.dtiPercent || 0).toFixed(1)}%</p>
+              <p className="text-xs font-bold text-emerald-600">Savings Rate: {savingsRatio.toFixed(1)}%</p>
+            </div>
+            <div className="space-y-2">
+              <h4 className="font-bold text-slate-800">Advisor Recommendations</h4>
+              <p className="text-xs text-slate-600">💡 Savings Category Status: {healthLabel}</p>
+              <p className="text-xs text-slate-600">📈 Combined Risk Factor: {healthScore}/100 Health Score</p>
+              <p className="text-xs text-slate-600">• Keep DTI ratio below 30% to shield from cash-crunch stresses.</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* STEP-BY-STEP USER GUIDE / WALKTHROUGH ACCORDION */}
       <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
@@ -530,59 +317,78 @@ export default function Dashboard() {
         >
           <div className="flex items-center gap-2 text-slate-800">
             <HelpCircle className="w-5 h-5 text-indigo-600" />
-            <span className="font-bold text-sm tracking-tight">Interactive User Guide & Realistic John Walkthrough</span>
+            <span className="font-bold text-sm tracking-tight">How To Use Smart Loan Analyzer</span>
           </div>
           <span className="text-xs text-slate-400 font-semibold">{showUserGuide ? 'Collapse' : 'Expand Guide'}</span>
         </button>
 
         {showUserGuide && (
-          <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-600 leading-relaxed border-t border-slate-100">
-            <div className="space-y-3.5">
+          <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-8 text-xs text-slate-600 leading-relaxed border-t border-slate-100">
+            <div className="lg:col-span-2 space-y-4">
               <h4 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
                 <Info className="w-4 h-4 text-indigo-500" />
-                How to Analyze Your Finances
+                Comprehensive Interactive User Guide
               </h4>
-              <p>
-                This guide describes how to complete a realistic evaluation of your cash surplus, deductions, and loan limit margins. Click the green <strong>"Try Demo Mode"</strong> button above to immediately visualize this sequence loaded with real parameters.
+              <p className="text-slate-500">
+                Welcome to the platform. Below is the complete onboarding workflow using our realistic guide profile, <strong>John (28 years old, Salaried Employee)</strong>. Follow these steps to map your dashboard indicators.
               </p>
-              <ul className="space-y-2.5 list-decimal list-inside pl-1 text-[11px]">
-                <li>
-                  <strong className="text-slate-800">Configure Salary Structures:</strong> Gross values are processed with tax rates to yield take-home surpluses.
-                </li>
-                <li>
-                  <strong className="text-slate-800">Track Core Expenditures:</strong> Itemize utility, accommodation, and discretionary expenses.
-                </li>
-                <li>
-                  <strong className="text-slate-800">Compute Loan Liabilities:</strong> Check how potential loan payments scale relative to residual buffers.
-                </li>
-                <li>
-                  <strong className="text-slate-800">Generate Professional PDFs:</strong> Export reports for audits and target budget tracking.
-                </li>
-              </ul>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                  <span className="font-extrabold text-slate-900 block mb-1">Step 1: Register/Login</span>
+                  <p className="text-slate-500">Sign up or enter credentials to start. Example demo profile: Email <strong>john@example.com</strong> / Pass <strong>John123</strong>.</p>
+                </div>
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                  <span className="font-extrabold text-slate-900 block mb-1">Step 2: Salary Configuration</span>
+                  <p className="text-slate-500">Enter Gross Salary (₹60,000). The engine auto-computes a 12% PF (₹7,200), subtracting Professional Tax (₹200) and Income Tax (₹2,000) for a Net Take-home of <strong>₹50,600</strong>.</p>
+                </div>
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                  <span className="font-extrabold text-slate-900 block mb-1">Step 3: Expense Tracking</span>
+                  <p className="text-slate-500">Log core outlays: Rent (₹15k), Food (₹6k), Transport (₹2k), Electricity (₹1.5k), Internet (₹800), Insurance (₹2k), and Others (₹3k) to evaluate your total monthly expenditures of <strong>₹30,300</strong>.</p>
+                </div>
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                  <span className="font-extrabold text-slate-900 block mb-1">Step 4: Disposable Surplus</span>
+                  <p className="text-slate-500">Net Salary (₹50,600) minus Expenses (₹30,300) leaves a disposable cushion of <strong>₹20,300</strong>. This buffer decides your safe borrowing thresholds.</p>
+                </div>
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                  <span className="font-extrabold text-slate-900 block mb-1">Step 5: Loan Simulation</span>
+                  <p className="text-slate-500">John simulates a bike loan of ₹2,00,000 at 10% for 36 months. The engine calculates the EMI, total interest, and total cumulative payback schedules.</p>
+                </div>
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                  <span className="font-extrabold text-slate-900 block mb-1">Step 6: Affordability Engine</span>
+                  <p className="text-slate-500">Matches estimated EMIs against remaining disposable funds. Classifies outcomes into <strong>Affordable ✅</strong>, <strong>Risky ⚠️</strong>, or <strong>Not Affordable ❌</strong>.</p>
+                </div>
+              </div>
             </div>
 
-            <div className="bg-indigo-50/50 border border-indigo-100 rounded-xl p-4 space-y-3">
-              <h4 className="font-bold text-indigo-950 text-xs uppercase tracking-wide">John's Demo Journey Case Study</h4>
-              <div className="space-y-2 text-[11px] text-slate-700">
-                <div className="flex justify-between">
-                  <span><strong>Age & Profile:</strong> 28, Salaried</span>
-                  <span><strong>Base Income:</strong> ₹60,000</span>
-                </div>
-                <div className="flex justify-between">
-                  <span><strong>Tax / PF Outflows:</strong> ₹7,200 PF + ₹2,200 Tax</span>
-                  <span><strong>Net Take-Home:</strong> ₹50,600</span>
-                </div>
-                <div className="flex justify-between">
-                  <span><strong>Total Core Expenses:</strong> Rent + Utilities</span>
-                  <span><strong>Total:</strong> ₹30,300</span>
-                </div>
-                <div className="flex justify-between">
-                  <span><strong>Residual Buffer:</strong> Net - Expenses</span>
-                  <span><strong>Disposable:</strong> ₹20,300</span>
-                </div>
-                <div className="border-t border-indigo-200/80 my-2 pt-2 text-[10px] text-indigo-900 leading-normal">
-                  💡 <strong>Affordability Check:</strong> John wants a ₹2 Lakh bike loan at 10% interest for 36 months (₹6,453 EMI). The engine flags this as <strong>Risky</strong> since the EMI constitutes 32% of his ₹20,300 disposable income.
-                </div>
+            <div className="space-y-4">
+              <h4 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4 text-indigo-500" />
+                🎥 Watch How To Use Tutorial
+              </h4>
+              <div className="relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-900 aspect-video flex flex-col items-center justify-center p-4 text-center">
+                {!isPlayingTutorial ? (
+                  <>
+                    <div className="absolute inset-0 bg-slate-950/80 flex flex-col items-center justify-center cursor-pointer" onClick={() => setIsPlayingTutorial(true)}>
+                      <div className="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center text-white shadow-lg mb-2 hover:scale-110 transition-transform">
+                        ▶
+                      </div>
+                      <span className="text-[10px] text-slate-300 font-bold uppercase tracking-wider">Start Learning Onboarding</span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center bg-slate-950 text-white space-y-2 p-2">
+                    <span className="text-[10px] text-indigo-400 font-bold uppercase">Playing Tutorial Video</span>
+                    <p className="text-[9px] text-slate-400 leading-normal">Demonstrating: Registration, Dashboard Cards, Salary Configuration calculations, Expense entries, Surplus, Loan parameters, and Health Ratios.</p>
+                    <button onClick={() => setIsPlayingTutorial(false)} className="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-[10px] rounded-lg text-white font-bold transition-all">
+                      Pause Tutorial
+                    </button>
+                  </div>
+                )}
+              </div>
+              <div className="p-3 bg-indigo-50 rounded-xl border border-indigo-100 text-[10px] text-indigo-900 space-y-1">
+                <span className="font-bold block text-indigo-950">Walkthrough Focus Areas:</span>
+                <p>1. Setup Salary (PF/PT/IT Math) <br />2. Logging Core Outflows <br />3. Stress Gauges & Health Score Metrics <br />4. AI Assistant Interface Queries</p>
               </div>
             </div>
           </div>
