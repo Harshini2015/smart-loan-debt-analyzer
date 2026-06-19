@@ -18,6 +18,21 @@ const UserSchema = new mongoose.Schema(
     emergencyFundAmount: { type: Number, default: 0, min: 0 },
     occupation: { type: String, default: '' },
 
+    // ── Salary Module ─────────────────────────────────────────────
+    grossSalary: { type: Number, default: 0, min: 0 },
+    pfPercentage: { type: Number, default: 12, min: 0 },
+    professionalTax: { type: Number, default: 0, min: 0 },
+    incomeTax: { type: Number, default: 0, min: 0 },
+
+    // ── Expense Tracking ──────────────────────────────────────────
+    expenseRent: { type: Number, default: 0, min: 0 },
+    expenseFood: { type: Number, default: 0, min: 0 },
+    expenseTransport: { type: Number, default: 0, min: 0 },
+    expenseElectricity: { type: Number, default: 0, min: 0 },
+    expenseInternet: { type: Number, default: 0, min: 0 },
+    expenseInsurance: { type: Number, default: 0, min: 0 },
+    expenseOther: { type: Number, default: 0, min: 0 },
+
     // ── Computed / Cached ─────────────────────────────────────────
     totalEMI: { type: Number, default: 0, min: 0 },
     debtHealthScore: { type: Number, default: 0, min: 0, max: 100 },

@@ -20,8 +20,25 @@ exports.getDashboard = async (req, res) => {
       .lean();
 
     // Get financial data from user profile
-    const monthlyIncome = Number(user.monthlyIncome || 0);
-    const monthlyExpenses = Number(user.monthlyExpenses || user.monthlyExpense || 0);
+    const grossSalary = Number(user.grossSalary || 0);
+    const pfPercentage = Number(user.pfPercentage || 12);
+    const pfAmount = Number((grossSalary * (pfPercentage / 100)).toFixed(2));
+    const professionalTax = Number(user.professionalTax || 0);
+    const incomeTax = Number(user.incomeTax || 0);
+    const netSalary = Math.max(0, grossSalary - pfAmount - professionalTax - incomeTax);
+
+    const expenseRent = Number(user.expenseRent || 0);
+    const expenseFood = Number(user.expenseFood || 0);
+    const expenseTransport = Number(user.expenseTransport || 0);
+    const expenseElectricity = Number(user.expenseElectricity || 0);
+    const expenseInternet = Number(user.expenseInternet || 0);
+    const expenseInsurance = Number(user.expenseInsurance || 0);
+    const expenseOther = Number(user.expenseOther || 0);
+
+    const totalExpenses = expenseRent + expenseFood + expenseTransport + expenseElectricity + expenseInternet + expenseInsurance + expenseOther;
+
+    const monthlyIncome = grossSalary > 0 ? netSalary : Number(user.monthlyIncome || 0);
+    const monthlyExpenses = totalExpenses > 0 ? totalExpenses : Number(user.monthlyExpenses || user.monthlyExpense || 0);
     const disposableIncome = Math.max(0, monthlyIncome - monthlyExpenses);
 
     // Calculate EMI for each loan using standard EMI formula
@@ -137,6 +154,20 @@ exports.getDashboard = async (req, res) => {
         loansCount: loans.length,
         onboardingCompleted: user.onboardingCompleted || false,
         emergencyFund,
+        grossSalary,
+        pfPercentage,
+        pfAmount,
+        professionalTax,
+        incomeTax,
+        netSalary,
+        expenseRent,
+        expenseFood,
+        expenseTransport,
+        expenseElectricity,
+        expenseInternet,
+        expenseInsurance,
+        expenseOther,
+        totalExpenses
       }
     });
   } catch (e) {
@@ -154,10 +185,62 @@ exports.updateFinancialInfo = async (req, res) => {
     const userId = req.user && req.user._id;
     if (!userId) return res.status(401).json({ success: false, message: 'Unauthorized' });
 
-    const { monthlyIncome, monthlyExpenses } = req.body;
+    const {
+      monthlyIncome,
+      monthlyExpenses,
+      grossSalary,
+      pfPercentage,
+      professionalTax,
+      incomeTax,
+      expenseRent,
+      expenseFood,
+      expenseTransport,
+      expenseElectricity,
+      expenseInternet,
+      expenseInsurance,
+      expenseOther
+    } = req.body;
+
+    const updateData = {};
+    if (monthlyIncome !== undefined) updateData.monthlyIncome = Number(monthlyIncome);
+    if (monthlyExpenses !== undefined) updateData.monthlyExpenses = Number(monthlyExpenses);
+    if (grossSalary !== undefined) updateData.grossSalary = Number(grossSalary);
+    if (pfPercentage !== undefined) updateData.pfPercentage = Number(pfPercentage);
+    if (professionalTax !== undefined) updateData.professionalTax = Number(professionalTax);
+    if (incomeTax !== undefined) updateData.incomeTax = Number(incomeTax);
+    if (expenseRent !== undefined) updateData.expenseRent = Number(expenseRent);
+    if (expenseFood !== undefined) updateData.expenseFood = Number(expenseFood);
+    if (expenseTransport !== undefined) updateData.expenseTransport = Number(expenseTransport);
+    if (expenseElectricity !== undefined) updateData.expenseElectricity = Number(expenseElectricity);
+    if (expenseInternet !== undefined) updateData.expenseInternet = Number(expenseInternet);
+    if (expenseInsurance !== undefined) updateData.expenseInsurance = Number(expenseInsurance);
+    if (expenseOther !== undefined) updateData.expenseOther = Number(expenseOther);
+
+    // Dynamic calculations if salary components are updated
+    const finalGross = grossSalary !== undefined ? Number(grossSalary) : 0;
+    if (finalGross > 0) {
+      const finalPfPct = pfPercentage !== undefined ? Number(pfPercentage) : 12;
+      const finalPt = professionalTax !== undefined ? Number(professionalTax) : 0;
+      const finalIt = incomeTax !== undefined ? Number(incomeTax) : 0;
+      const pfAmt = finalGross * (finalPfPct / 100);
+      updateData.monthlyIncome = Math.max(0, finalGross - pfAmt - finalPt - finalIt);
+    }
+
+    const rentVal = expenseRent !== undefined ? Number(expenseRent) : 0;
+    const foodVal = expenseFood !== undefined ? Number(expenseFood) : 0;
+    const transportVal = expenseTransport !== undefined ? Number(expenseTransport) : 0;
+    const electricityVal = expenseElectricity !== undefined ? Number(expenseElectricity) : 0;
+    const internetVal = expenseInternet !== undefined ? Number(expenseInternet) : 0;
+    const insuranceVal = expenseInsurance !== undefined ? Number(expenseInsurance) : 0;
+    const otherVal = expenseOther !== undefined ? Number(expenseOther) : 0;
+    const totalExp = rentVal + foodVal + transportVal + electricityVal + internetVal + insuranceVal + otherVal;
+    if (totalExp > 0 || expenseRent !== undefined) {
+      updateData.monthlyExpenses = totalExp;
+    }
+
     const user = await User.findByIdAndUpdate(
       userId,
-      { monthlyIncome, monthlyExpenses },
+      { $set: updateData },
       { new: true }
     ).select('-password');
 
