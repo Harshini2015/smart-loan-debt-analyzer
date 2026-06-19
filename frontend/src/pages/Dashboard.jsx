@@ -236,7 +236,6 @@ export default function Dashboard() {
   ].filter(item => item.value > 0);
 
   const [showInAppSummary, setShowInAppSummary] = useState(false);
-  const [isPlayingTutorial, setIsPlayingTutorial] = useState(false);
 
   return (
     <div className="space-y-8 pb-10 bg-slate-50 min-h-screen text-slate-800 font-sans leading-relaxed">
@@ -364,31 +363,33 @@ export default function Dashboard() {
             <div className="space-y-4">
               <h4 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
                 <Sparkles className="w-4 h-4 text-indigo-500" />
-                🎥 Watch How To Use Tutorial
+                🎥 How To Use Smart Loan Analyzer
               </h4>
-              <div className="relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-900 aspect-video flex flex-col items-center justify-center p-4 text-center">
-                {!isPlayingTutorial ? (
-                  <>
-                    <div className="absolute inset-0 bg-slate-950/80 flex flex-col items-center justify-center cursor-pointer" onClick={() => setIsPlayingTutorial(true)}>
-                      <div className="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center text-white shadow-lg mb-2 hover:scale-110 transition-transform">
-                        ▶
-                      </div>
-                      <span className="text-[10px] text-slate-300 font-bold uppercase tracking-wider">Start Learning Onboarding</span>
-                    </div>
-                  </>
-                ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center bg-slate-950 text-white space-y-2 p-2">
-                    <span className="text-[10px] text-indigo-400 font-bold uppercase">Playing Tutorial Video</span>
-                    <p className="text-[9px] text-slate-400 leading-normal">Demonstrating: Registration, Dashboard Cards, Salary Configuration calculations, Expense entries, Surplus, Loan parameters, and Health Ratios.</p>
-                    <button onClick={() => setIsPlayingTutorial(false)} className="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-[10px] rounded-lg text-white font-bold transition-all">
-                      Pause Tutorial
-                    </button>
-                  </div>
-                )}
+              <p className="text-slate-500 text-[11px] mb-2">
+                Watch this complete walkthrough to understand salary analysis, expenses, loans, AI assistant and financial planning.
+              </p>
+              <div className="relative w-full rounded-2xl overflow-hidden border border-slate-200 bg-slate-900 aspect-video flex flex-col items-center justify-center shadow-lg">
+                <iframe
+                  className="w-full h-full"
+                  src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                  title="Smart Loan Analyzer Onboarding Walkthrough"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  onError={(e) => {
+                    console.error("Video loading error:", e);
+                    e.target.style.display = 'none';
+                    const parent = e.target.parentElement;
+                    const errEl = document.createElement('div');
+                    errEl.className = "text-rose-400 font-bold text-xs p-4 text-center";
+                    errEl.innerText = "Tutorial video unavailable";
+                    parent.appendChild(errEl);
+                  }}
+                ></iframe>
               </div>
-              <div className="p-3 bg-indigo-50 rounded-xl border border-indigo-100 text-[10px] text-indigo-900 space-y-1">
+              <div className="p-3 bg-indigo-50 rounded-xl border border-indigo-100 text-[10px] text-indigo-900 space-y-1 mt-3">
                 <span className="font-bold block text-indigo-950">Walkthrough Focus Areas:</span>
-                <p>1. Setup Salary (PF/PT/IT Math) <br />2. Logging Core Outflows <br />3. Stress Gauges & Health Score Metrics <br />4. AI Assistant Interface Queries</p>
+                <p>1. Setup Salary (Gross vs PF/PT/IT Net Take-home) <br />2. Track Rent, Food, Utilities <br />3. Run Bike Loan SIM & Affordability Indicators <br />4. Query AI Financial Assistant</p>
               </div>
             </div>
           </div>
