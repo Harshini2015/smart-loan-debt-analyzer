@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Automatically check environment variable or fallback to production
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "https://smart-loan-debt-analyzer.onrender.com/api",
+  baseURL: import.meta.env.VITE_API_URL || "https://smart-loan-debt-analyzer.onrender.com/api",
   withCredentials: true,
 });
 
