@@ -20,7 +20,8 @@ import {
   AreaChart, 
   Sparkles,
   Play,
-  Globe
+  Globe,
+  ChevronDown
 } from 'lucide-react';
 
 // John SVG character posing dynamically based on step index
@@ -128,7 +129,8 @@ const JohnCharacter = ({ step }) => {
 
 export default function Walkthrough() {
   const [activeStep, setActiveStep] = useState(0);
-  const { t, language, toggleLanguage } = useLanguage();
+  const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+  const { t, language, setLanguage, toggleLanguage } = useLanguage();
   const navigate = useNavigate();
 
   const handleNext = () => {
@@ -465,17 +467,58 @@ export default function Walkthrough() {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Language switch on Walkthrough page */}
-          <button
-            onClick={toggleLanguage}
-            title="Switch Language"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-extrabold bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition-all cursor-pointer"
-          >
-            <Globe className="w-3.5 h-3.5 text-slate-500" />
-            <span>
-              {language === 'en' ? 'ಕನ್ನಡ' : language === 'kn' ? 'हिन्दी' : 'English'}
-            </span>
-          </button>
+          <div className="relative animate-fade-in">
+            <button
+              onClick={() => setLangDropdownOpen((v) => !v)}
+              title="Switch Language"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-extrabold bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition-all cursor-pointer"
+            >
+              <Globe className="w-3.5 h-3.5 text-slate-500" />
+              <span>
+                {language === 'en' ? 'English' : language === 'hi' ? 'हिन्दी' : 'ಕನ್ನಡ'}
+              </span>
+              <ChevronDown className="w-3 h-3 text-slate-400" />
+            </button>
+
+            <AnimatePresence>
+              {langDropdownOpen && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setLangDropdownOpen(false)} />
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="absolute right-0 mt-2 w-32 rounded-xl bg-slate-950 border border-slate-800 shadow-xl p-1.5 z-20 text-slate-400"
+                  >
+                    <button
+                      onClick={() => { setLanguage('en'); setLangDropdownOpen(false); }}
+                      className={`w-full text-left px-3 py-2 text-xs font-semibold rounded-lg transition-colors ${
+                        language === 'en' ? 'bg-slate-900 text-white font-bold' : 'hover:bg-slate-900 hover:text-white'
+                      }`}
+                    >
+                      English
+                    </button>
+                    <button
+                      onClick={() => { setLanguage('hi'); setLangDropdownOpen(false); }}
+                      className={`w-full text-left px-3 py-2 text-xs font-semibold rounded-lg transition-colors ${
+                        language === 'hi' ? 'bg-slate-900 text-white font-bold' : 'hover:bg-slate-900 hover:text-white'
+                      }`}
+                    >
+                      हिन्दी
+                    </button>
+                    <button
+                      onClick={() => { setLanguage('kn'); setLangDropdownOpen(false); }}
+                      className={`w-full text-left px-3 py-2 text-xs font-semibold rounded-lg transition-colors ${
+                        language === 'kn' ? 'bg-slate-900 text-white font-bold' : 'hover:bg-slate-900 hover:text-white'
+                      }`}
+                    >
+                      ಕನ್ನಡ
+                    </button>
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
+          </div>
 
           <button
             onClick={handleSkip}

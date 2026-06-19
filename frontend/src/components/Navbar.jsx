@@ -23,7 +23,7 @@ import {
 
 const Navbar = () => {
   const { user, logout } = useAuth();
-  const { language, toggleLanguage, t } = useLanguage();
+  const { language, setLanguage, toggleLanguage, t } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -31,6 +31,7 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [langDropdownOpen, setLangDropdownOpen] = useState(false);
 
   // ── Stateful Notifications (persisted in localStorage) ──────────────────────
   const [notifications, setNotifications] = useState(() => {
@@ -194,15 +195,59 @@ const Navbar = () => {
                 </span>
               </button>
 
-              {/* Language switcher */}
-              <button
-                onClick={toggleLanguage}
-                title="Switch Language / ಭಾಷೆ ಬದಲಿಸಿ"
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-slate-50 border border-slate-200 hover:bg-slate-100 hover:text-slate-900 transition-all cursor-pointer text-slate-700 active:scale-95"
-              >
-                <Globe className="w-3.5 h-3.5 text-slate-500" />
-                <span>{language === 'en' ? 'ಕನ್ನಡ' : 'English'}</span>
-              </button>
+              {/* Language switcher dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => setLangDropdownOpen((v) => !v)}
+                  title="Switch Language / ಭಾಷೆ ಬದಲಿಸಿ"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-slate-50 border border-slate-200 hover:bg-slate-100 hover:text-slate-900 transition-all cursor-pointer text-slate-700 active:scale-95 animate-fade-in"
+                >
+                  <Globe className="w-3.5 h-3.5 text-slate-500" />
+                  <span>
+                    {language === 'en' ? 'English' : language === 'hi' ? 'हिन्दी' : 'ಕನ್ನಡ'}
+                  </span>
+                  <ChevronDown className="w-3 h-3 text-slate-400" />
+                </button>
+
+                <AnimatePresence>
+                  {langDropdownOpen && (
+                    <>
+                      <div className="fixed inset-0 z-10" onClick={() => setLangDropdownOpen(false)} />
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        className="absolute right-0 mt-2 w-32 rounded-xl bg-white border border-slate-200 shadow-xl p-1.5 z-20"
+                      >
+                        <button
+                          onClick={() => { setLanguage('en'); setLangDropdownOpen(false); }}
+                          className={`w-full text-left px-3 py-2 text-xs font-semibold rounded-lg transition-colors ${
+                            language === 'en' ? 'bg-indigo-50 text-indigo-600 font-bold' : 'text-slate-700 hover:bg-slate-50'
+                          }`}
+                        >
+                          English
+                        </button>
+                        <button
+                          onClick={() => { setLanguage('hi'); setLangDropdownOpen(false); }}
+                          className={`w-full text-left px-3 py-2 text-xs font-semibold rounded-lg transition-colors ${
+                            language === 'hi' ? 'bg-indigo-50 text-indigo-600 font-bold' : 'text-slate-700 hover:bg-slate-50'
+                          }`}
+                        >
+                          हिन्दी
+                        </button>
+                        <button
+                          onClick={() => { setLanguage('kn'); setLangDropdownOpen(false); }}
+                          className={`w-full text-left px-3 py-2 text-xs font-semibold rounded-lg transition-colors ${
+                            language === 'kn' ? 'bg-indigo-50 text-indigo-600 font-bold' : 'text-slate-700 hover:bg-slate-50'
+                          }`}
+                        >
+                          ಕನ್ನಡ
+                        </button>
+                      </motion.div>
+                    </>
+                  )}
+                </AnimatePresence>
+              </div>
 
               {/* ── Notification Bell ────────────────────────────────────────── */}
               <div className="relative">
@@ -413,14 +458,44 @@ const Navbar = () => {
               </nav>
 
               <div className="border-t border-slate-100 pt-4 flex flex-col gap-3">
-                {/* Language toggle in mobile */}
-                <button
-                  onClick={toggleLanguage}
-                  className="w-full flex items-center justify-center gap-2 py-2 px-4 bg-slate-50 border border-slate-200 text-slate-700 rounded-xl text-sm font-semibold hover:bg-slate-100"
-                >
-                  <Globe className="w-4 h-4" />
-                  <span>{language === 'en' ? 'Switch to ಕನ್ನಡ' : 'Switch to English'}</span>
-                </button>
+                {/* Language selection in mobile */}
+                <div className="flex flex-col gap-1.5 px-1">
+                  <span className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">
+                    {language === 'en' ? 'Select Language' : language === 'hi' ? 'भाषा चुनें' : 'ಭಾಷೆಯನ್ನು ಆರಿಸಿ'}
+                  </span>
+                  <div className="grid grid-cols-3 gap-2">
+                    <button
+                      onClick={() => setLanguage('en')}
+                      className={`py-2 px-1 text-xs font-bold border rounded-xl transition-all ${
+                        language === 'en'
+                          ? 'bg-indigo-50 border-indigo-200 text-indigo-600 font-bold'
+                          : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                      }`}
+                    >
+                      English
+                    </button>
+                    <button
+                      onClick={() => setLanguage('hi')}
+                      className={`py-2 px-1 text-xs font-bold border rounded-xl transition-all ${
+                        language === 'hi'
+                          ? 'bg-indigo-50 border-indigo-200 text-indigo-600 font-bold'
+                          : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                      }`}
+                    >
+                      हिन्दी
+                    </button>
+                    <button
+                      onClick={() => setLanguage('kn')}
+                      className={`py-2 px-1 text-xs font-bold border rounded-xl transition-all ${
+                        language === 'kn'
+                          ? 'bg-indigo-50 border-indigo-200 text-indigo-600 font-bold'
+                          : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                      }`}
+                    >
+                      ಕನ್ನಡ
+                    </button>
+                  </div>
+                </div>
 
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-800">
