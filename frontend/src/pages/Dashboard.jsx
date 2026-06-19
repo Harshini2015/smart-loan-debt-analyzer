@@ -260,7 +260,7 @@ export default function Dashboard() {
             className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-emerald-600/15 active:scale-95 transition-all cursor-pointer"
           >
             <Sparkles className="w-4 h-4 text-emerald-100" />
-            Start Walkthrough
+            Start Walkthrough 🚀
           </Link>
           <button
             onClick={() => setShowConfigModal(true)}

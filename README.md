@@ -54,16 +54,22 @@ Our application features a step-by-step onboarding process to construct your fin
 
 ---
 
-## 🗺️ Walkthrough Guide
+## 🗺️ Interactive Walkthrough
 
-New users can open the walkthrough page to learn the complete application via an interactive step-by-step map/timeline journey using Leaflet.js.
+New users can open the walkthrough page (`/walkthrough`) to learn the complete application via an animated character-based product tour led by John.
 
-It explains the features in simple, easy-to-understand language:
-- **Account Setup & Salary Deductions**: Creating a profile and adding gross income to calculate deductions.
-- **Expenses & Savings**: Adding rent, food, transport, and bills to understand remaining cash.
-- **Loan Checks & Debt Stress**: Checking EMI affordability and mapping stress indicators (DTI ratios) without technical complexity.
-- **Goals & Emergency Reserve**: Building a safety fund runway and setting savings targets.
-- **AI Financial Guidance**: Querying the built-in advisor to optimize your savings budget.
+It guides users through:
+- 👋 **Welcome John**: Introduction to your guide companion and his goals.
+- 👤 **Account Setup**: Simulating registration details.
+- 💰 **Salary Deductions**: Calculating PF and tax impact on take-home pay.
+- 🏠 **Expense Tracking**: Visualizing floating cards for Rent, Food, Travel, and Bills.
+- 📊 **Savings Cushion**: Explaining Income minus Expenses in simple terms.
+- 🏦 **Loan Calculator**: Simulating an EMI schedule for a bike purchase.
+- ⚠️ **Debt Stress**: Explaining DTI safety ratios via a worried expression/meter.
+- 🛟 **Emergency Fund**: Planning runway reserves.
+- 🎯 **Financial Goals**: Setting saving milestones for future dreams.
+- 🤖 **AI Assistant**: Getting custom tips from our intelligent model.
+- 📈 **Dashboard Insights**: Seeing the complete visual health score.
 
 ---
 
