@@ -17,7 +17,7 @@ https://smart-loan-debt-analyzer.onrender.com
 ## ✨ Features
 
 - **Dashboard**: High-fidelity modern financial dashboard style overview with responsive cards, micro-animations, and visual metrics.
-- **Tutorial & Video Onboarding**: Built-in visual tutorial player showing registration steps, configuration flows, and analyzer tools.
+- **Interactive Walkthrough Guide**: Interactive Leaflet.js-based timeline map routing that guides new users through every section of the application with clear, simple examples.
 - **Loan Management**: Track active loans, monthly EMIs, and overall repayment progress.
 - **Loan Simulation**: Compare loan configurations, tenure options, and interest burdens.
 - **Debt Stress Analysis**: Real-time Debt-to-Income (DTI) ratio tracking, stress severity categories, and mitigation suggestions.
@@ -54,15 +54,16 @@ Our application features a step-by-step onboarding process to construct your fin
 
 ---
 
-## 🎥 Video Tutorial Walkthrough
+## 🗺️ Walkthrough Guide
 
-Users can click the play button in the tutorial section to see a walk-through demonstration covering:
-- Creating a profile and landing on the main dashboard cards.
-- Configuring salary components and deduction variables.
-- Adding household outlays to compute disposable income.
-- Simulating a custom vehicle or personal loan.
-- Parsing stress indicators (DTI percentages) and evaluating health rankings.
-- Querying the AI Assistant to obtain tips on minimizing debts.
+New users can open the walkthrough page to learn the complete application via an interactive step-by-step map/timeline journey using Leaflet.js.
+
+It explains the features in simple, easy-to-understand language:
+- **Account Setup & Salary Deductions**: Creating a profile and adding gross income to calculate deductions.
+- **Expenses & Savings**: Adding rent, food, transport, and bills to understand remaining cash.
+- **Loan Checks & Debt Stress**: Checking EMI affordability and mapping stress indicators (DTI ratios) without technical complexity.
+- **Goals & Emergency Reserve**: Building a safety fund runway and setting savings targets.
+- **AI Financial Guidance**: Querying the built-in advisor to optimize your savings budget.
 
 ---
 

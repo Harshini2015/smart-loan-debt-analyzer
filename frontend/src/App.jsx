@@ -17,6 +17,7 @@ import FamilyDashboard from "./pages/FamilyDashboard";
 import GoalsDashboard from "./pages/GoalsDashboard";
 import PrivateRoute from "./pages/PrivateRoute";
 import Onboarding from "./pages/Onboarding";
+import Walkthrough from "./pages/Walkthrough";
 
 function App() {
   return (
@@ -28,6 +29,16 @@ function App() {
               {/* Public */}
               <Route path="/auth/login" element={<Login />} />
               <Route path="/auth/register" element={<Register />} />
+
+              {/* Walkthrough */}
+              <Route
+                path="/walkthrough"
+                element={
+                  <PrivateRoute>
+                    <Walkthrough />
+                  </PrivateRoute>
+                }
+              />
 
               {/* Onboarding — protected but outside main layout */}
               <Route

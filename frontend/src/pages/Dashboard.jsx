@@ -255,6 +255,13 @@ export default function Dashboard() {
         </div>
 
         <div className="flex items-center gap-3 flex-wrap">
+          <Link
+            to="/walkthrough"
+            className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-emerald-600/15 active:scale-95 transition-all cursor-pointer"
+          >
+            <Sparkles className="w-4 h-4 text-emerald-100" />
+            Start Walkthrough
+          </Link>
           <button
             onClick={() => setShowConfigModal(true)}
             className="flex items-center gap-2 px-5 py-2.5 bg-white hover:bg-slate-50 text-slate-700 rounded-xl text-sm font-semibold border border-slate-200 shadow active:scale-95 transition-all cursor-pointer"
@@ -322,14 +329,14 @@ export default function Dashboard() {
         </button>
 
         {showUserGuide && (
-          <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-8 text-xs text-slate-600 leading-relaxed border-t border-slate-100">
-            <div className="lg:col-span-2 space-y-4">
+          <div className="p-6 grid grid-cols-1 lg:grid-cols-2 gap-6 text-xs text-slate-600 leading-relaxed border-t border-slate-100">
+            <div className="space-y-4">
               <h4 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
                 <Info className="w-4 h-4 text-indigo-500" />
                 Comprehensive Interactive User Guide
               </h4>
               <p className="text-slate-500">
-                Welcome to the platform. Below is the complete onboarding workflow using our realistic guide profile, <strong>John (28 years old, Salaried Employee)</strong>. Follow these steps to map your dashboard indicators.
+                Welcome to the platform. Explore the onboarding workflow using our realistic guide profile, <strong>John (28 years old, Salaried Employee)</strong>. Click the walkthrough button above to view the leaflet-style map journey!
               </p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -349,47 +356,28 @@ export default function Dashboard() {
                   <span className="font-extrabold text-slate-900 block mb-1">Step 4: Disposable Surplus</span>
                   <p className="text-slate-500">Net Salary (₹50,600) minus Expenses (₹30,300) leaves a disposable cushion of <strong>₹20,300</strong>. This buffer decides your safe borrowing thresholds.</p>
                 </div>
-                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                  <span className="font-extrabold text-slate-900 block mb-1">Step 5: Loan Simulation</span>
-                  <p className="text-slate-500">John simulates a bike loan of ₹2,00,000 at 10% for 36 months. The engine calculates the EMI, total interest, and total cumulative payback schedules.</p>
-                </div>
-                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                  <span className="font-extrabold text-slate-900 block mb-1">Step 6: Affordability Engine</span>
-                  <p className="text-slate-500">Matches estimated EMIs against remaining disposable funds. Classifies outcomes into <strong>Affordable ✅</strong>, <strong>Risky ⚠️</strong>, or <strong>Not Affordable ❌</strong>.</p>
-                </div>
               </div>
             </div>
 
-            <div className="space-y-4">
-              <h4 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4 text-indigo-500" />
-                🎥 How To Use Smart Loan Analyzer
-              </h4>
-              <p className="text-slate-500 text-[11px] mb-2">
-                Watch this complete walkthrough to understand salary analysis, expenses, loans, AI assistant and financial planning.
-              </p>
-              <div className="relative w-full rounded-2xl overflow-hidden border border-slate-200 bg-slate-900 aspect-video flex flex-col items-center justify-center shadow-lg">
-                <iframe
-                  className="w-full h-full"
-                  src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                  title="Smart Loan Analyzer Onboarding Walkthrough"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                  onError={(e) => {
-                    console.error("Video loading error:", e);
-                    e.target.style.display = 'none';
-                    const parent = e.target.parentElement;
-                    const errEl = document.createElement('div');
-                    errEl.className = "text-rose-400 font-bold text-xs p-4 text-center";
-                    errEl.innerText = "Tutorial video unavailable";
-                    parent.appendChild(errEl);
-                  }}
-                ></iframe>
+            <div className="space-y-4 bg-indigo-50/50 border border-indigo-100 rounded-2xl p-5 flex flex-col justify-between">
+              <div>
+                <h4 className="font-bold text-slate-900 text-sm flex items-center gap-1.5 mb-2">
+                  <Sparkles className="w-4 h-4 text-indigo-500" />
+                  Interactive Guided Journey
+                </h4>
+                <p className="text-[11px] text-slate-600 mb-4">
+                  We have constructed a full walkthrough mapping page displaying maps, features details, and simulations. Navigate directly to explore all elements.
+                </p>
+                <Link
+                  to="/walkthrough"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold transition-all"
+                >
+                  🚀 Start Walkthrough
+                </Link>
               </div>
-              <div className="p-3 bg-indigo-50 rounded-xl border border-indigo-100 text-[10px] text-indigo-900 space-y-1 mt-3">
-                <span className="font-bold block text-indigo-950">Walkthrough Focus Areas:</span>
-                <p>1. Setup Salary (Gross vs PF/PT/IT Net Take-home) <br />2. Track Rent, Food, Utilities <br />3. Run Bike Loan SIM & Affordability Indicators <br />4. Query AI Financial Assistant</p>
+              <div className="p-3 bg-white rounded-xl border border-indigo-100 text-[10px] text-indigo-900 space-y-1">
+                <span className="font-bold block text-indigo-950">Leaflet Route Landmarks:</span>
+                <p>• Account setup & Salary metrics <br />• Cost items logs & surplus tracking <br />• Simulation calculations & Health checks</p>
               </div>
             </div>
           </div>
