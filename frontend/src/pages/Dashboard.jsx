@@ -244,13 +244,13 @@ export default function Dashboard() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-200 pb-6">
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight text-black flex items-center gap-2.5 font-sans">
-            Welcome, John 👋
+            {t('welcomeJohn')}
             <span className="text-xs bg-indigo-100 text-indigo-800 border border-indigo-200 px-3 py-1 rounded-full font-medium tracking-normal">
-              Premium Account
+              {t('premiumAccount')}
             </span>
           </h1>
           <p className="text-slate-500 text-sm mt-1">
-            Analyze salary deductions, configure itemized tracking, check DTI metrics, and view real-time summaries.
+            {t('dashboardDesc')}
           </p>
         </div>
 
@@ -260,21 +260,21 @@ export default function Dashboard() {
             className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-emerald-600/15 active:scale-95 transition-all cursor-pointer"
           >
             <Sparkles className="w-4 h-4 text-emerald-100" />
-            Start Walkthrough 🚀
+            {t('startWalkthroughBtn')}
           </Link>
           <button
             onClick={() => setShowConfigModal(true)}
             className="flex items-center gap-2 px-5 py-2.5 bg-white hover:bg-slate-50 text-slate-700 rounded-xl text-sm font-semibold border border-slate-200 shadow active:scale-95 transition-all cursor-pointer"
           >
             <Settings className="w-4 h-4 text-slate-500" />
-            Configure Finances
+            {t('configureFinancials')}
           </button>
           <button
             onClick={() => setShowInAppSummary(!showInAppSummary)}
             className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold shadow-lg shadow-indigo-600/20 active:scale-95 transition-all cursor-pointer"
           >
             <FileText className="w-4 h-4" />
-            {showInAppSummary ? 'Hide Summary' : 'In-App Financial Summary'}
+            {showInAppSummary ? t('hideSummary') : t('inAppSummary')}
           </button>
         </div>
       </div>
@@ -285,31 +285,31 @@ export default function Dashboard() {
           <div className="flex items-center justify-between border-b border-slate-200 pb-3">
             <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-indigo-600" />
-              In-App Financial Summary & Advisor Assessment
+              {t('inAppSummary')}
             </h3>
-            <span className="text-xs bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full font-bold">Confidential Audit</span>
+            <span className="text-xs bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full font-bold">{t('confidentialAudit')}</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
             <div className="space-y-2">
-              <h4 className="font-bold text-slate-800">Deductions Summary</h4>
-              <p className="text-xs text-slate-600">Gross Salary: {formatCurrency(gross)}</p>
-              <p className="text-xs text-slate-600">Provident Fund (PF): {formatCurrency(pfAmt)} ({pfPct}%)</p>
-              <p className="text-xs text-slate-600">Professional Tax: {formatCurrency(pt)}</p>
-              <p className="text-xs text-slate-600">Income Tax: {formatCurrency(it)}</p>
-              <p className="text-xs font-bold text-indigo-600">Net Take-Home: {formatCurrency(net)}</p>
+              <h4 className="font-bold text-slate-800">{t('deductionsSummary')}</h4>
+              <p className="text-xs text-slate-600">{t('grossSalaryLabel')} {formatCurrency(gross)}</p>
+              <p className="text-xs text-slate-600">{t('pfLabel')} {formatCurrency(pfAmt)} ({pfPct}%)</p>
+              <p className="text-xs text-slate-600">{t('ptLabel')} {formatCurrency(pt)}</p>
+              <p className="text-xs text-slate-600">{t('itLabel')} {formatCurrency(it)}</p>
+              <p className="text-xs font-bold text-indigo-600">{t('netTakeHomeLabel')} {formatCurrency(net)}</p>
             </div>
             <div className="space-y-2">
-              <h4 className="font-bold text-slate-800">Expense Allocations</h4>
-              <p className="text-xs text-slate-600">Core Total: {formatCurrency(totalExp)}</p>
-              <p className="text-xs text-slate-600">Surplus Headroom: {formatCurrency(dispIncome)}</p>
-              <p className="text-xs text-slate-600">DTI Ratio: {(dashboardData?.dtiPercent || 0).toFixed(1)}%</p>
-              <p className="text-xs font-bold text-emerald-600">Savings Rate: {savingsRatio.toFixed(1)}%</p>
+              <h4 className="font-bold text-slate-800">{t('expenseAllocations')}</h4>
+              <p className="text-xs text-slate-600">{t('coreTotal')} {formatCurrency(totalExp)}</p>
+              <p className="text-xs text-slate-600">{t('surplusHeadroom')} {formatCurrency(dispIncome)}</p>
+              <p className="text-xs text-slate-600">{t('dtiRatioLabel')} {(dashboardData?.dtiPercent || 0).toFixed(1)}%</p>
+              <p className="text-xs font-bold text-emerald-600">{t('savingsRateLabel')} {savingsRatio.toFixed(1)}%</p>
             </div>
             <div className="space-y-2">
-              <h4 className="font-bold text-slate-800">Advisor Recommendations</h4>
-              <p className="text-xs text-slate-600">💡 Savings Category Status: {healthLabel}</p>
-              <p className="text-xs text-slate-600">📈 Combined Risk Factor: {healthScore}/100 Health Score</p>
-              <p className="text-xs text-slate-600">• Keep DTI ratio below 30% to shield from cash-crunch stresses.</p>
+              <h4 className="font-bold text-slate-800">{t('advisorRec')}</h4>
+              <p className="text-xs text-slate-600">💡 {t('savingsCatStatus')} {healthLabel}</p>
+              <p className="text-xs text-slate-600">📈 {t('combinedRiskFactor')} {healthScore}/100</p>
+              <p className="text-xs text-slate-600">• {t('dtiTip')}</p>
             </div>
           </div>
         </div>
@@ -323,9 +323,9 @@ export default function Dashboard() {
         >
           <div className="flex items-center gap-2 text-slate-800">
             <HelpCircle className="w-5 h-5 text-indigo-600" />
-            <span className="font-bold text-sm tracking-tight">How To Use Smart Loan Analyzer</span>
+            <span className="font-bold text-sm tracking-tight">{t('howToUseTitle')}</span>
           </div>
-          <span className="text-xs text-slate-400 font-semibold">{showUserGuide ? 'Collapse' : 'Expand Guide'}</span>
+          <span className="text-xs text-slate-400 font-semibold">{showUserGuide ? t('cancel') : t('manageLoans')}</span>
         </button>
 
         {showUserGuide && (
@@ -333,28 +333,28 @@ export default function Dashboard() {
             <div className="space-y-4">
               <h4 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
                 <Info className="w-4 h-4 text-indigo-500" />
-                Comprehensive Interactive User Guide
+                {t('howToUseTitle')}
               </h4>
               <p className="text-slate-500">
-                Welcome to the platform. Explore the onboarding workflow using our realistic guide profile, <strong>John (28 years old, Salaried Employee)</strong>. Click the walkthrough button above to view the leaflet-style map journey!
+                {t('howToUseDesc')}
               </p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                  <span className="font-extrabold text-slate-900 block mb-1">Step 1: Register/Login</span>
-                  <p className="text-slate-500">Sign up or enter credentials to start. Example demo profile: Email <strong>john@example.com</strong> / Pass <strong>John123</strong>.</p>
+                  <span className="font-extrabold text-slate-900 block mb-1">{t('step1Title')}</span>
+                  <p className="text-slate-500">{t('step1Desc')}</p>
                 </div>
                 <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                  <span className="font-extrabold text-slate-900 block mb-1">Step 2: Salary Configuration</span>
-                  <p className="text-slate-500">Enter Gross Salary (₹60,000). The engine auto-computes a 12% PF (₹7,200), subtracting Professional Tax (₹200) and Income Tax (₹2,000) for a Net Take-home of <strong>₹50,600</strong>.</p>
+                  <span className="font-extrabold text-slate-900 block mb-1">{t('step2Title')}</span>
+                  <p className="text-slate-500">{t('step2Desc')}</p>
                 </div>
                 <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                  <span className="font-extrabold text-slate-900 block mb-1">Step 3: Expense Tracking</span>
-                  <p className="text-slate-500">Log core outlays: Rent (₹15k), Food (₹6k), Transport (₹2k), Electricity (₹1.5k), Internet (₹800), Insurance (₹2k), and Others (₹3k) to evaluate your total monthly expenditures of <strong>₹30,300</strong>.</p>
+                  <span className="font-extrabold text-slate-900 block mb-1">{t('step3Title')}</span>
+                  <p className="text-slate-500">{t('step3Desc')}</p>
                 </div>
                 <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                  <span className="font-extrabold text-slate-900 block mb-1">Step 4: Disposable Surplus</span>
-                  <p className="text-slate-500">Net Salary (₹50,600) minus Expenses (₹30,300) leaves a disposable cushion of <strong>₹20,300</strong>. This buffer decides your safe borrowing thresholds.</p>
+                  <span className="font-extrabold text-slate-900 block mb-1">{t('step4Title')}</span>
+                  <p className="text-slate-500">{t('step4Desc')}</p>
                 </div>
               </div>
             </div>
@@ -363,21 +363,21 @@ export default function Dashboard() {
               <div>
                 <h4 className="font-bold text-slate-900 text-sm flex items-center gap-1.5 mb-2">
                   <Sparkles className="w-4 h-4 text-indigo-500" />
-                  Interactive Guided Journey
+                  {t('guidedJourneyTitle')}
                 </h4>
                 <p className="text-[11px] text-slate-600 mb-4">
-                  We have constructed a full walkthrough mapping page displaying maps, features details, and simulations. Navigate directly to explore all elements.
+                  {t('guidedJourneyDesc')}
                 </p>
                 <Link
                   to="/walkthrough"
                   className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold transition-all"
                 >
-                  🚀 Start Walkthrough
+                  🚀 {t('startWalkthroughBtn')}
                 </Link>
               </div>
               <div className="p-3 bg-white rounded-xl border border-indigo-100 text-[10px] text-indigo-900 space-y-1">
-                <span className="font-bold block text-indigo-950">Leaflet Route Landmarks:</span>
-                <p>• Account setup & Salary metrics <br />• Cost items logs & surplus tracking <br />• Simulation calculations & Health checks</p>
+                <span className="font-bold block text-indigo-950">{t('leafletLandmarks')}</span>
+                <p>{t('leafletLandmarksDesc')}</p>
               </div>
             </div>
           </div>

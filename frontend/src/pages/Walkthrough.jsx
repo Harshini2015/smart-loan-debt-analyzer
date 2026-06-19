@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLanguage } from '../context/LanguageContext';
 import { 
   ArrowLeft, 
   ArrowRight, 
@@ -18,13 +19,12 @@ import {
   MessageSquareCode, 
   AreaChart, 
   Sparkles,
-  HelpCircle,
-  Play
+  Play,
+  Globe
 } from 'lucide-react';
 
 // John SVG character posing dynamically based on step index
 const JohnCharacter = ({ step }) => {
-  // Determine expressions & arms based on active scene
   let headY = 0;
   let leftArmRotation = 0;
   let rightArmRotation = 0;
@@ -32,63 +32,62 @@ const JohnCharacter = ({ step }) => {
   let eyesPathL = "M 38 48 A 2 2 0 0 1 42 48"; // happy eye
   let eyesPathR = "M 58 48 A 2 2 0 0 1 62 48";
   let bodyColor = "#4f46e5"; // Indigo hoodie
-  let showSpeechBubble = true;
 
   switch (step) {
-    case 0: // Welcome (waving left arm)
+    case 0:
       leftArmRotation = -40;
-      mouthPath = "M 42 62 Q 50 72 58 62"; // wide smile
+      mouthPath = "M 42 62 Q 50 72 58 62";
       break;
-    case 1: // Account Setup (points left)
+    case 1:
       rightArmRotation = 30;
       leftArmRotation = -110;
       mouthPath = "M 45 62 Q 50 68 55 62";
       break;
-    case 2: // Salary Setup (points right/up)
+    case 2:
       rightArmRotation = -85;
       mouthPath = "M 45 62 Q 50 70 55 62";
       break;
-    case 3: // Expense Setup (hands wide/juggling)
+    case 3:
       leftArmRotation = -60;
       rightArmRotation = 60;
       mouthPath = "M 42 62 Q 50 72 58 62";
       break;
-    case 4: // Savings (thumbs up pose / arm up)
+    case 4:
       leftArmRotation = -90;
       mouthPath = "M 42 62 Q 50 75 58 62";
       break;
-    case 5: // Loan Calculation (thinking pose, hand on chin)
+    case 5:
       leftArmRotation = -20;
       rightArmRotation = -140;
-      mouthPath = "M 46 64 Q 50 64 54 64"; // neutral mouth
-      eyesPathL = "M 38 48 A 3 3 0 0 1 42 48"; // wide eye
+      mouthPath = "M 46 64 Q 50 64 54 64";
+      eyesPathL = "M 38 48 A 3 3 0 0 1 42 48";
       eyesPathR = "M 58 48 A 3 3 0 0 1 62 48";
       break;
-    case 6: // Stress Analysis (worried pose)
+    case 6:
       leftArmRotation = 10;
       rightArmRotation = 10;
-      mouthPath = "M 45 67 Q 50 61 55 67"; // frown
-      eyesPathL = "M 36 50 Q 40 45 44 50"; // worried eyes
+      mouthPath = "M 45 67 Q 50 61 55 67";
+      eyesPathL = "M 36 50 Q 40 45 44 50";
       eyesPathR = "M 56 50 Q 60 45 64 50";
       headY = 2;
       break;
-    case 7: // Emergency Fund (holding lifebuoy / shield)
+    case 7:
       leftArmRotation = -30;
       rightArmRotation = -30;
       mouthPath = "M 44 62 Q 50 69 56 62";
       break;
-    case 8: // Financial Goals (target lookup, looking up)
+    case 8:
       leftArmRotation = -80;
       mouthPath = "M 42 62 Q 50 72 58 62";
       break;
-    case 9: // AI Assistant (talking)
+    case 9:
       leftArmRotation = -45;
-      mouthPath = "M 45 61 Q 50 67 55 65"; // talking mouth shape
+      mouthPath = "M 45 61 Q 50 67 55 65";
       break;
-    case 10: // Dashboard completion (celebrating!)
+    case 10:
       leftArmRotation = -135;
       rightArmRotation = 135;
-      mouthPath = "M 40 60 Q 50 76 60 60"; // super smile
+      mouthPath = "M 40 60 Q 50 76 60 60";
       headY = -4;
       break;
     default:
@@ -97,54 +96,28 @@ const JohnCharacter = ({ step }) => {
 
   return (
     <div className="relative w-72 h-80 mx-auto flex items-center justify-center">
-      {/* Animated Glow Backdrop */}
       <div className="absolute w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl animate-pulse pointer-events-none" />
-
       <svg viewBox="0 0 100 120" className="w-full h-full drop-shadow-2xl z-10 overflow-visible">
-        {/* HAIR (BACK) */}
         <path d="M 32 45 C 30 20, 70 20, 68 45 Z" fill="#1e1b4b" />
-
-        {/* LEFT ARM */}
         <g style={{ transform: `rotate(${leftArmRotation}deg)`, transformOrigin: "26px 65px", transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)" }}>
           <path d="M 26 65 L 12 85 C 10 88, 14 92, 16 89 L 28 72 Z" fill="#312e81" />
-          <circle cx="12" cy="85" r="4" fill="#fed7aa" /> {/* hand */}
+          <circle cx="12" cy="85" r="4" fill="#fed7aa" />
         </g>
-
-        {/* RIGHT ARM */}
         <g style={{ transform: `rotate(${rightArmRotation}deg)`, transformOrigin: "74px 65px", transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)" }}>
           <path d="M 74 65 L 88 85 C 90 88, 86 92, 84 89 L 72 72 Z" fill="#312e81" />
-          <circle cx="88" cy="85" r="4" fill="#fed7aa" /> {/* hand */}
+          <circle cx="88" cy="85" r="4" fill="#fed7aa" />
         </g>
-
-        {/* BODY (HOODIE) */}
         <path d="M 25 70 C 25 60, 75 60, 75 70 L 80 120 L 20 120 Z" fill={bodyColor} />
-        {/* Draw drawstrings for hoodie */}
         <path d="M 46 72 L 46 90" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" />
         <path d="M 54 72 L 54 95" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" />
-
-        {/* NECK */}
         <rect x="44" y="55" width="12" height="12" fill="#fdba74" rx="2" />
-
-        {/* HEAD */}
         <g style={{ transform: `translateY(${headY}px)`, transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)" }}>
-          {/* Face */}
           <circle cx="50" cy="48" r="18" fill="#fdba74" />
-          {/* Hair Front */}
           <path d="M 32 44 Q 50 30 68 44 Q 50 36 32 44" fill="#1e1b4b" />
-          
-          {/* EYES */}
-          {/* Left Eye */}
           <path d={eyesPathL} stroke="#1e293b" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-          {/* Right Eye */}
           <path d={eyesPathR} stroke="#1e293b" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-
-          {/* NOSE */}
           <path d="M 49 53 L 51 53 L 50 56 Z" fill="#f97316" />
-
-          {/* MOUTH */}
-          <path d={mouthPath} stroke="#1e293b" strokeWidth="2" fill="none" strokeLinecap="round" style={{ transition: "all 0.4s" }} />
-
-          {/* CHEEKS */}
+          <path d={mouthPath} stroke="#1e293b" strokeWidth="2" fill="none" strokeLinecap="round" />
           <circle cx="37" cy="55" r="2.5" fill="#f43f5e" opacity="0.3" />
           <circle cx="63" cy="55" r="2.5" fill="#f43f5e" opacity="0.3" />
         </g>
@@ -155,6 +128,7 @@ const JohnCharacter = ({ step }) => {
 
 export default function Walkthrough() {
   const [activeStep, setActiveStep] = useState(0);
+  const { t, language, toggleLanguage } = useLanguage();
   const navigate = useNavigate();
 
   const handleNext = () => {
@@ -175,133 +149,131 @@ export default function Walkthrough() {
 
   const stepsData = [
     {
-      title: "👋 Welcome John!",
-      subtitle: "Meet your guide companion",
-      desc: "Hi, I am John. Let me show you how Smart Loan Analyzer helps me manage my money.",
+      title: t('w_welcome_title'),
+      subtitle: t('w_welcome_subtitle'),
+      desc: t('w_welcome_desc'),
       renderPreview: () => (
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 h-64 flex flex-col justify-between relative overflow-hidden">
           <div className="absolute -top-12 -right-12 w-28 h-28 bg-indigo-500/10 rounded-full blur-xl" />
           <div className="space-y-3">
             <span className="text-[10px] bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-3 py-1 rounded-full font-bold uppercase tracking-wider">
-              Profile Summary
+              {t('w_welcome_label')}
             </span>
-            <h4 className="text-xl font-bold text-white">John's Portfolio</h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Age: 28 years old <br />
-              Profession: Salaried employee <br />
-              Goal: Save money, avoid cash-crunch stress, and plan for a bike loan.
+            <h4 className="text-base font-bold text-white">{t('welcomeJohn').replace(' 👋', '')}</h4>
+            <p className="text-xs text-slate-400 leading-relaxed whitespace-pre-line">
+              {t('w_welcome_body')}
             </p>
           </div>
           <div className="text-[10px] text-slate-500 border-t border-slate-800/80 pt-3">
-            🎯 Journey objective: Keep cash reserves healthy
+            {t('w_welcome_footer')}
           </div>
         </div>
       )
     },
     {
-      title: "👤 Setup Account",
-      subtitle: "First Step to Financial Safety",
-      desc: "First create your account so the app knows who you are.",
+      title: t('w_account_title'),
+      subtitle: t('w_account_subtitle'),
+      desc: t('w_account_desc'),
       renderPreview: () => (
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 h-64 flex flex-col justify-between">
           <div className="space-y-4">
             <span className="text-[10px] bg-sky-500/20 text-sky-400 border border-sky-500/30 px-3 py-1 rounded-full font-bold uppercase tracking-wider">
-              Registration
+              {t('w_account_label')}
             </span>
             <div className="space-y-2">
               <div className="p-2.5 bg-slate-950 rounded-xl border border-slate-850 flex items-center justify-between text-xs">
-                <span className="text-slate-400">Profile Name:</span>
+                <span className="text-slate-400">{t('nickname')}:</span>
                 <span className="text-white font-bold">John</span>
               </div>
               <div className="p-2.5 bg-slate-950 rounded-xl border border-slate-850 flex items-center justify-between text-xs">
-                <span className="text-slate-400">Email Address:</span>
+                <span className="text-slate-400">{t('emailAddress')}:</span>
                 <span className="text-white font-semibold">john@example.com</span>
               </div>
             </div>
           </div>
           <div className="text-[10px] text-emerald-400 flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
-            Verified Demo Profile Details
+            {t('w_account_footer')}
           </div>
         </div>
       )
     },
     {
-      title: "💰 Salary Section",
-      subtitle: "Gross Salary vs Net Take-Home",
-      desc: "I first add my monthly salary.",
+      title: t('w_salary_title'),
+      subtitle: t('w_salary_subtitle'),
+      desc: t('w_salary_desc'),
       renderPreview: () => (
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 h-64 flex flex-col justify-between overflow-y-auto">
           <span className="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full font-bold uppercase tracking-wider w-fit">
-            Salary Breakdown
+            {t('w_salary_label')}
           </span>
           <div className="space-y-1.5 text-xs my-2">
             <div className="flex justify-between">
-              <span className="text-slate-400">Gross Monthly:</span>
+              <span className="text-slate-400">{t('grossSalaryInput')}:</span>
               <span className="text-white font-bold">₹60,000</span>
             </div>
             <div className="flex justify-between text-rose-400 text-[11px]">
-              <span>Provident Fund (PF, 12%):</span>
+              <span>{t('pfLabel')} (12%):</span>
               <span>-₹7,200</span>
             </div>
             <div className="flex justify-between text-rose-400 text-[11px]">
-              <span>Professional Tax (PT):</span>
+              <span>{t('ptLabel')}:</span>
               <span>-₹200</span>
             </div>
             <div className="flex justify-between text-rose-400 text-[11px]">
-              <span>Income Tax (IT):</span>
-              <span>-₹2,000</span>
+              <span>{t('itLabel')}:</span>
+              <span>-₹2,00,0</span>
             </div>
           </div>
           <div className="bg-indigo-950/40 border border-indigo-900/30 p-2.5 rounded-xl flex justify-between text-xs">
-            <span className="text-indigo-300 font-bold">Net Salary:</span>
+            <span className="text-indigo-300 font-bold">{t('netTakeHomeLabel')}</span>
             <span className="text-indigo-200 font-extrabold">₹50,600</span>
           </div>
         </div>
       )
     },
     {
-      title: "🏠 Expense Tracking",
-      subtitle: "Keep track of where cash flies",
-      desc: "I track where my money goes every month.",
+      title: t('w_expense_title'),
+      subtitle: t('w_expense_subtitle'),
+      desc: t('w_expense_desc'),
       renderPreview: () => (
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 h-64 flex flex-col justify-between">
           <span className="text-[10px] bg-rose-500/20 text-rose-400 border border-rose-500/30 px-3 py-1 rounded-full font-bold uppercase tracking-wider w-fit">
-            Floating Expense Items
+            {t('w_expense_label')}
           </span>
           <div className="grid grid-cols-2 gap-2 my-2">
-            <motion.div whileHover={{ scale: 1.05 }} className="p-2 bg-slate-950 rounded-xl border border-slate-800 text-center">
-              <span className="text-[10px] text-slate-400 block">House Rent</span>
-              <span className="text-xs font-bold text-white">₹15,000</span>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} className="p-2 bg-slate-950 rounded-xl border border-slate-800 text-center">
-              <span className="text-[10px] text-slate-400 block">Food</span>
-              <span className="text-xs font-bold text-white">₹6,000</span>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} className="p-2 bg-slate-950 rounded-xl border border-slate-800 text-center">
-              <span className="text-[10px] text-slate-400 block">Travel</span>
-              <span className="text-xs font-bold text-white">₹2,000</span>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} className="p-2 bg-slate-950 rounded-xl border border-slate-800 text-center">
-              <span className="text-[10px] text-slate-400 block">Bills / Wifi</span>
-              <span className="text-xs font-bold text-white">₹7,300</span>
-            </motion.div>
+            <div className="p-2 bg-slate-950 rounded-xl border border-slate-800 text-center text-xs">
+              <span className="text-[10px] text-slate-400 block">{t('monthlyRentInput')}</span>
+              <span className="font-bold text-white">₹15,000</span>
+            </div>
+            <div className="p-2 bg-slate-950 rounded-xl border border-slate-800 text-center text-xs">
+              <span className="text-[10px] text-slate-400 block">{t('foodGroceriesInput')}</span>
+              <span className="font-bold text-white">₹6,000</span>
+            </div>
+            <div className="p-2 bg-slate-950 rounded-xl border border-slate-800 text-center text-xs">
+              <span className="text-[10px] text-slate-400 block">{t('transportInputLabel')}</span>
+              <span className="font-bold text-white">₹2,00,0</span>
+            </div>
+            <div className="p-2 bg-slate-950 rounded-xl border border-slate-800 text-center text-xs">
+              <span className="text-[10px] text-slate-400 block">{t('otherExpensesInputLabel')}</span>
+              <span className="font-bold text-white">₹7,300</span>
+            </div>
           </div>
           <div className="flex justify-between text-xs border-t border-slate-850 pt-2.5">
-            <span className="text-slate-400 font-semibold">Total Cost:</span>
+            <span className="text-slate-400 font-semibold">{t('coreTotal')}</span>
             <span className="text-white font-extrabold">₹30,300</span>
           </div>
         </div>
       )
     },
     {
-      title: "📊 Understand Savings",
-      subtitle: "Remaining Cash Surplus",
-      desc: "This tells me how much money I can save.",
+      title: t('w_savings_title'),
+      subtitle: t('w_savings_subtitle'),
+      desc: t('w_savings_desc'),
       renderPreview: () => (
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 h-64 flex flex-col justify-between">
           <span className="text-[10px] bg-teal-500/20 text-teal-400 border border-teal-500/30 px-3 py-1 rounded-full font-bold uppercase tracking-wider w-fit">
-            Savings Cushion
+            {t('w_savings_label')}
           </span>
           <div className="space-y-3.5 my-auto">
             <div className="h-4 bg-slate-950 rounded-full overflow-hidden flex text-[9px] font-bold text-white text-center">
@@ -313,85 +285,84 @@ export default function Walkthrough() {
               </div>
             </div>
             <div className="flex justify-between text-xs bg-emerald-950/40 border border-emerald-900/30 p-3 rounded-2xl">
-              <span className="text-emerald-300 font-extrabold">Remaining Money:</span>
+              <span className="text-emerald-300 font-extrabold">{t('surplusHeadroom')}</span>
               <span className="text-emerald-200 font-black">₹20,300</span>
             </div>
           </div>
-          <span className="text-[10px] text-slate-400 text-center block">Calculated as: Income - Expenses = Remaining Money</span>
+          <span className="text-[10px] text-slate-400 text-center block">Calculated as: {t('incomeMinusExpenses')}</span>
         </div>
       )
     },
     {
-      title: "🏦 Check Loan Calculator",
-      subtitle: "Simulate and Test EMI",
-      desc: "I check if I can afford a loan before taking it.",
+      title: t('w_loan_title'),
+      subtitle: t('w_loan_subtitle'),
+      desc: t('w_loan_desc'),
       renderPreview: () => (
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 h-64 flex flex-col justify-between">
           <span className="text-[10px] bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-3 py-1 rounded-full font-bold uppercase tracking-wider w-fit">
-            Bike Loan Simulation
+            {t('w_loan_label')}
           </span>
           <div className="space-y-2 text-xs my-2">
             <div className="flex justify-between">
-              <span className="text-slate-400">Loan Principal:</span>
+              <span className="text-slate-400">{t('loanPrincipal').replace(' ($)', '')}:</span>
               <span className="text-white font-bold">₹2,00,000</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-400">Tenure & Rate:</span>
+              <span className="text-slate-400">{t('rate')}:</span>
               <span className="text-white font-semibold">10% / 36 Months</span>
             </div>
             <div className="flex justify-between border-t border-slate-800/80 pt-2 text-sm text-cyan-400 font-black">
-              <span>Calculated EMI:</span>
+              <span>{t('calcMonthlyEmi')}:</span>
               <span>₹6,453 / month</span>
             </div>
           </div>
           <div className="p-2.5 bg-amber-950/30 border border-amber-900/30 rounded-xl text-[10px] text-amber-300">
-            Allows testing how EMI impacts leftover buffers before taking credit.
+            {t('calibrateMicroSavings').replace('round-up algorithm rounding checks are.', 'loan affordability constraints.')}
           </div>
         </div>
       )
     },
     {
-      title: "⚠️ Debt Stress Analysis",
-      subtitle: "How much of your salary goes to loans",
-      desc: "The app tells me if my loans are safe or risky.",
+      title: t('w_stress_title'),
+      subtitle: t('w_stress_subtitle'),
+      desc: t('w_stress_desc'),
       renderPreview: () => (
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 h-64 flex flex-col justify-between">
           <span className="text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full font-bold uppercase tracking-wider w-fit">
-            Stress Meter
+            {t('w_stress_label')}
           </span>
           <div className="my-auto space-y-3">
             <div className="w-full bg-slate-950 rounded-full h-3.5 border border-slate-800 overflow-hidden relative">
               <div className="bg-gradient-to-r from-emerald-500 via-amber-500 to-rose-500 h-full" style={{ width: '100%' }} />
-              {/* Pointer indicator */}
               <div className="absolute top-0 w-2.5 h-full bg-white shadow-xl" style={{ left: '32%' }} />
             </div>
             <div className="flex justify-between items-center text-xs">
-              <span className="text-amber-400 font-bold">Stress level: Risky ⚠️</span>
+              <span className="text-amber-400 font-bold">{t('statusLabel')}: {t('riskyLeverage').replace(' ⚠️', '')}</span>
               <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 font-bold text-[10px]">
-                32% of Surplus Taken
+                32%
               </span>
             </div>
           </div>
-          <span className="text-[10px] text-slate-500">Alerts John to stop taking more loans when stress spikes.</span>
+          <span className="text-[10px] text-slate-500">{t('dtiTip')}</span>
         </div>
       )
     },
     {
-      title: "🛟 Emergency Fund",
-      subtitle: "Preparing for unexpected costs",
-      desc: "I prepare money for emergencies.",
+      title: t('w_fund_title'),
+      subtitle: t('w_fund_subtitle'),
+      desc: t('w_fund_desc'),
       renderPreview: () => (
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 h-64 flex flex-col justify-between">
           <span className="text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30 px-3 py-1 rounded-full font-bold uppercase tracking-wider w-fit">
-            Emergency Reserves
+            {t('w_fund_label')}
           </span>
           <div className="space-y-3 my-auto">
             <div className="flex justify-between text-xs">
-              <span className="text-slate-400">Target Fund (3-months):</span>
+              <span className="text-slate-400">{t('fundGoal')}:</span>
               <span className="text-white font-bold">₹90,900</span>
             </div>
             <div className="flex justify-between text-xs">
-              <span className="text-slate-400">Saved Balance:</span>
+              <span className="text-slate-400">{t('currentBalance')}:</span>
               <span className="text-emerald-400 font-bold">₹35,000</span>
             </div>
             <div className="w-full bg-slate-950 h-2 rounded-full overflow-hidden">
@@ -399,61 +370,61 @@ export default function Walkthrough() {
             </div>
           </div>
           <div className="text-[10px] text-slate-500 text-center">
-            John saves a small amount monthly for unexpected problems.
+            {t('fundDesc')}
           </div>
         </div>
       )
     },
     {
-      title: "🎯 Financial Goals",
-      subtitle: "Planning Future Dreams",
-      desc: "I plan my future goals.",
+      title: t('w_goals_title'),
+      subtitle: t('w_goals_subtitle'),
+      desc: t('w_goals_desc'),
       renderPreview: () => (
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 h-64 flex flex-col justify-between">
           <span className="text-[10px] bg-pink-500/20 text-pink-400 border border-pink-500/30 px-3 py-1 rounded-full font-bold uppercase tracking-wider w-fit">
-            Future Goals
+            {t('w_goals_label')}
           </span>
           <div className="space-y-3 my-2 text-xs">
             <div className="p-2.5 bg-slate-950 rounded-xl border border-slate-850 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4 text-pink-400" />
-                <span className="text-white font-bold">Car / Bike / House / Education</span>
+                <span className="text-white font-bold">{t('myGoals')}</span>
               </div>
             </div>
             <div className="flex justify-between text-[11px] text-slate-400 px-1">
-              <span>Goal Cost: ₹2,00,000</span>
-              <span className="text-pink-400 font-bold">Requires saving over time</span>
+              <span>₹2,00,000</span>
+              <span className="text-pink-400 font-bold">{t('monthlyContribution')}</span>
             </div>
           </div>
-          <span className="text-[10px] text-slate-500 text-center block">Calculates exact savings path dynamically.</span>
+          <span className="text-[10px] text-slate-500 text-center block">{t('goalsDesc')}</span>
         </div>
       )
     },
     {
-      title: "🤖 AI Assistant",
-      subtitle: "Your Money Assistant Friend",
-      desc: "I can ask financial questions and get guidance.",
+      title: t('w_ai_title'),
+      subtitle: t('w_ai_subtitle'),
+      desc: t('w_ai_desc'),
       renderPreview: () => (
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 h-64 flex flex-col justify-between">
           <span className="text-[10px] bg-purple-500/20 text-purple-400 border border-purple-500/30 px-3 py-1 rounded-full font-bold uppercase tracking-wider w-fit">
-            AI Guidance
+            {t('w_ai_label')}
           </span>
           <div className="space-y-2.5 text-[11px] my-2 overflow-y-auto">
             <div className="p-2 bg-slate-950 rounded-xl border border-slate-850 text-slate-300 text-right">
-              "How do I optimize my monthly spends?"
+              "Optimize spends?"
             </div>
             <div className="p-2 bg-indigo-950/40 border border-indigo-900/30 rounded-xl text-indigo-200">
-              "🤖 Cut non-core expenses and direct savings to your emergency pot!"
+              {t('aiAdvisorySuggestions')}
             </div>
           </div>
-          <span className="text-[9px] text-slate-500">Powered by advanced intelligence model advisors.</span>
+          <span className="text-[9px] text-slate-500">{t('neuralEngineActive')}</span>
         </div>
       )
     },
     {
-      title: "📈 Dashboard",
-      subtitle: "Visual overview of cash stability",
-      desc: "Now I can see my complete financial health.",
+      title: t('w_dashboard_title'),
+      subtitle: t('w_dashboard_subtitle'),
+      desc: t('w_dashboard_desc'),
       renderPreview: () => (
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 h-64 flex flex-col justify-between relative overflow-hidden">
           <div className="absolute top-4 right-4 w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center border border-emerald-500/20">
@@ -461,15 +432,15 @@ export default function Walkthrough() {
           </div>
           <div className="space-y-2">
             <span className="text-[10px] bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 px-3 py-1 rounded-full font-bold uppercase tracking-wider w-fit">
-              Health Status
+              {t('w_dashboard_label')}
             </span>
-            <h4 className="text-xl font-bold text-white mt-2">Score: 72/100</h4>
+            <h4 className="text-xl font-bold text-white mt-2">{t('financialHealth')}: 72/100</h4>
             <p className="text-xs text-slate-400">
-              Charts, active EMI calculations, debt health scores, and premium PDF reporting widgets are active!
+              {t('dashboardDesc')}
             </p>
           </div>
           <div className="text-[10px] text-indigo-400 font-extrabold flex items-center gap-1">
-            ✨ Setup is now complete!
+            ✨ {t('inviteSuccess').replace('family member!', 'Walkthrough!')}
           </div>
         </div>
       )
@@ -478,7 +449,6 @@ export default function Walkthrough() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans relative overflow-hidden">
-      {/* Decorative background glows */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-sky-600/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -489,17 +459,32 @@ export default function Walkthrough() {
             <Sparkles className="w-5 h-5 animate-pulse" />
           </div>
           <div>
-            <h1 className="text-base font-black tracking-tight text-white">Smart Loan & Debt Stress Analyzer</h1>
-            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Product Tour</p>
+            <h1 className="text-base font-black tracking-tight text-white">{t('guidedJourneyTitle')}</h1>
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{t('startWalkthroughBtn').replace(' 🚀', '')}</p>
           </div>
         </div>
-        <button
-          onClick={handleSkip}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white rounded-lg text-xs font-bold transition-all border border-slate-800"
-        >
-          <X className="w-4 h-4" />
-          Skip Tour
-        </button>
+
+        <div className="flex items-center gap-2">
+          {/* Language switch on Walkthrough page */}
+          <button
+            onClick={toggleLanguage}
+            title="Switch Language"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-extrabold bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition-all cursor-pointer"
+          >
+            <Globe className="w-3.5 h-3.5 text-slate-500" />
+            <span>
+              {language === 'en' ? 'ಕನ್ನಡ' : language === 'kn' ? 'हिन्दी' : 'English'}
+            </span>
+          </button>
+
+          <button
+            onClick={handleSkip}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white rounded-lg text-xs font-bold transition-all border border-slate-800"
+          >
+            <X className="w-4 h-4" />
+            {t('w_skip')}
+          </button>
+        </div>
       </header>
 
       {/* Tour Frame */}
@@ -524,10 +509,10 @@ export default function Walkthrough() {
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs">
                 <span className="font-extrabold text-indigo-400 uppercase tracking-widest">
-                  Step {activeStep + 1} / {stepsData.length}
+                  {t('progressText')} {activeStep + 1} / {stepsData.length}
                 </span>
                 <span className="text-slate-400 font-bold">
-                  {Math.round(((activeStep + 1) / stepsData.length) * 100)}% Completed
+                  {Math.round(((activeStep + 1) / stepsData.length) * 100)}% {t('completedText')}
                 </span>
               </div>
               <div className="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden">
@@ -564,11 +549,11 @@ export default function Walkthrough() {
                 className={`flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold transition-all border ${
                   activeStep === 0 
                     ? 'border-slate-900 bg-slate-950/20 text-slate-600 cursor-not-allowed' 
-                    : 'border-slate-880 bg-slate-950 hover:bg-slate-900 text-white active:scale-95'
+                    : 'border-slate-800 bg-slate-950 hover:bg-slate-900 text-white active:scale-95'
                 }`}
               >
                 <ArrowLeft className="w-4 h-4" />
-                Previous
+                {t('w_prev')}
               </button>
 
               {activeStep === stepsData.length - 1 ? (
@@ -576,7 +561,7 @@ export default function Walkthrough() {
                   onClick={() => navigate('/dashboard')}
                   className="flex-1 flex items-center justify-center gap-1.5 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-black shadow-lg shadow-emerald-600/10 active:scale-95 transition-all border border-emerald-500"
                 >
-                  Enter Dashboard
+                  {t('w_finish')}
                   <Play className="w-4 h-4" />
                 </button>
               ) : (
@@ -584,7 +569,7 @@ export default function Walkthrough() {
                   onClick={handleNext}
                   className="flex-1 flex items-center justify-center gap-1.5 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-black shadow-lg shadow-indigo-600/10 active:scale-95 transition-all border border-indigo-500"
                 >
-                  Next Step
+                  {t('w_next')}
                   <ArrowRight className="w-4 h-4" />
                 </button>
               )}
