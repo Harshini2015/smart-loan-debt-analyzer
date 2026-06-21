@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
+import { useAuth } from '../context/AuthContext';
 import { 
   ArrowLeft, 
   ArrowRight, 
@@ -131,6 +132,7 @@ export default function Walkthrough() {
   const [activeStep, setActiveStep] = useState(0);
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const { t, language, setLanguage, toggleLanguage } = useLanguage();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const handleNext = () => {
@@ -161,7 +163,7 @@ export default function Walkthrough() {
             <span className="text-[10px] bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-3 py-1 rounded-full font-bold uppercase tracking-wider">
               {t('w_welcome_label')}
             </span>
-            <h4 className="text-base font-bold text-white">{t('welcomeJohn').replace(' 👋', '')}</h4>
+            <h4 className="text-base font-bold text-white">{t('welcomeUser').replace('{name}', 'John').replace(' 👋', '')}</h4>
             <p className="text-xs text-slate-400 leading-relaxed whitespace-pre-line">
               {t('w_welcome_body')}
             </p>
@@ -185,11 +187,11 @@ export default function Walkthrough() {
             <div className="space-y-2">
               <div className="p-2.5 bg-slate-950 rounded-xl border border-slate-850 flex items-center justify-between text-xs">
                 <span className="text-slate-400">{t('nickname')}:</span>
-                <span className="text-white font-bold">John</span>
+                <span className="text-white font-bold">{user?.name || 'John'}</span>
               </div>
               <div className="p-2.5 bg-slate-950 rounded-xl border border-slate-850 flex items-center justify-between text-xs">
                 <span className="text-slate-400">{t('emailAddress')}:</span>
-                <span className="text-white font-semibold">john@example.com</span>
+                <span className="text-white font-semibold">{user?.email || 'john@example.com'}</span>
               </div>
             </div>
           </div>
@@ -280,10 +282,10 @@ export default function Walkthrough() {
           <div className="space-y-3.5 my-auto">
             <div className="h-4 bg-slate-950 rounded-full overflow-hidden flex text-[9px] font-bold text-white text-center">
               <div className="bg-indigo-600 h-full flex items-center justify-center transition-all" style={{ width: '60%' }}>
-                Net ₹50.6k
+                {t('w_net')} ₹50.6k
               </div>
               <div className="bg-amber-600 h-full flex items-center justify-center transition-all" style={{ width: '40%' }}>
-                Cost ₹30.3k
+                {t('w_cost')} ₹30.3k
               </div>
             </div>
             <div className="flex justify-between text-xs bg-emerald-950/40 border border-emerald-900/30 p-3 rounded-2xl">
@@ -291,7 +293,7 @@ export default function Walkthrough() {
               <span className="text-emerald-200 font-black">₹20,300</span>
             </div>
           </div>
-          <span className="text-[10px] text-slate-400 text-center block">Calculated as: {t('incomeMinusExpenses')}</span>
+          <span className="text-[10px] text-slate-400 text-center block">{t('w_calculated_as')}: {t('incomeMinusExpenses')}</span>
         </div>
       )
     },
@@ -311,11 +313,11 @@ export default function Walkthrough() {
             </div>
             <div className="flex justify-between">
               <span className="text-slate-400">{t('rate')}:</span>
-              <span className="text-white font-semibold">10% / 36 Months</span>
+              <span className="text-white font-semibold">10% / 36 {t('w_months_plural')}</span>
             </div>
             <div className="flex justify-between border-t border-slate-800/80 pt-2 text-sm text-cyan-400 font-black">
               <span>{t('calcMonthlyEmi')}:</span>
-              <span>₹6,453 / month</span>
+              <span>₹6,453 / {t('g_month_singular')}</span>
             </div>
           </div>
           <div className="p-2.5 bg-amber-950/30 border border-amber-900/30 rounded-xl text-[10px] text-amber-300">
@@ -413,7 +415,7 @@ export default function Walkthrough() {
           </span>
           <div className="space-y-2.5 text-[11px] my-2 overflow-y-auto">
             <div className="p-2 bg-slate-950 rounded-xl border border-slate-850 text-slate-300 text-right">
-              "Optimize spends?"
+              "{t('w_optimize_spends')}"
             </div>
             <div className="p-2 bg-indigo-950/40 border border-indigo-900/30 rounded-xl text-indigo-200">
               {t('aiAdvisorySuggestions')}
@@ -442,7 +444,7 @@ export default function Walkthrough() {
             </p>
           </div>
           <div className="text-[10px] text-indigo-400 font-extrabold flex items-center gap-1">
-            ✨ {t('inviteSuccess').replace('family member!', 'Walkthrough!')}
+            ✨ {t('w_dashboard_footer_msg')}
           </div>
         </div>
       )

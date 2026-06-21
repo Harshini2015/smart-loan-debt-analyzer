@@ -38,7 +38,7 @@ const FundDashboard = () => {
       setPercentage(res.data.percentage || 0);
       setMode(res.data.wallet?.savingMode || 'gentle');
     } catch (e) {
-      setError('Failed to load emergency fund. Please try again.');
+      setError(t('ef_failed_load', 'Failed to load emergency fund. Please try again.'));
     } finally {
       setLoading(false);
     }
@@ -60,15 +60,15 @@ const FundDashboard = () => {
     setActionLoading(true);
     setActionMsg('');
     try {
-      const res = await emergencyFundService.deposit({ amount: Number(amount), reason: reason || 'Manual deposit' });
+      const res = await emergencyFundService.deposit({ amount: Number(amount), reason: reason || t('ef_manual_deposit', 'Manual deposit') });
       setWallet(res.data.wallet);
       setRunwayMonths(res.data.runwayMonths);
       setPercentage(res.data.percentage);
-      setActionMsg(`✅ ₹${Number(amount).toLocaleString('en-IN')} added successfully!`);
+      setActionMsg(`✅ ${t('ef_deposit_success')}`);
       setAmount(''); setReason('');
       setTimeout(() => { setActiveModal(null); setActionMsg(''); }, 1500);
     } catch (e) {
-      setActionMsg(e.response?.data?.message || 'Deposit failed. Try again.');
+      setActionMsg(e.response?.data?.message || t('ef_deposit_failed'));
     } finally {
       setActionLoading(false);
     }
@@ -79,15 +79,15 @@ const FundDashboard = () => {
     setActionLoading(true);
     setActionMsg('');
     try {
-      const res = await emergencyFundService.withdraw({ amount: Number(amount), reason: reason || 'Emergency withdrawal' });
+      const res = await emergencyFundService.withdraw({ amount: Number(amount), reason: reason || t('ef_emergency_withdrawal', 'Emergency withdrawal') });
       setWallet(res.data.wallet);
       setRunwayMonths(res.data.runwayMonths);
       setPercentage(res.data.percentage);
-      setActionMsg(`✅ Withdrawal of ₹${Number(amount).toLocaleString('en-IN')} done.`);
+      setActionMsg(`✅ ${t('ef_withdraw_success')}`);
       setAmount(''); setReason('');
       setTimeout(() => { setActiveModal(null); setActionMsg(''); }, 1500);
     } catch (e) {
-      setActionMsg(e.response?.data?.message || 'Withdrawal failed. Try again.');
+      setActionMsg(e.response?.data?.message || t('ef_withdraw_failed'));
     } finally {
       setActionLoading(false);
     }
@@ -107,10 +107,10 @@ const FundDashboard = () => {
       setWallet(res.data.wallet);
       setRunwayMonths(res.data.runwayMonths);
       setPercentage(res.data.percentage);
-      setActionMsg('✅ Financial setup saved!');
+      setActionMsg(`✅ ${t('ef_setup_saved')}`);
       setTimeout(() => { setActiveModal(null); setActionMsg(''); }, 1500);
     } catch (e) {
-      setActionMsg(e.response?.data?.message || 'Setup failed. Try again.');
+      setActionMsg(e.response?.data?.message || t('ef_setup_failed'));
     } finally {
       setActionLoading(false);
     }
@@ -157,7 +157,7 @@ const FundDashboard = () => {
     <div className="max-w-lg mx-auto mt-16 text-center">
       <AlertCircle className="w-12 h-12 text-rose-500 mx-auto mb-4" />
       <p className="text-slate-700 font-semibold mb-4">{error}</p>
-      <button onClick={loadStatus} className="px-5 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold cursor-pointer hover:bg-indigo-700">Retry</button>
+      <button onClick={loadStatus} className="px-5 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold cursor-pointer hover:bg-indigo-700">{t('retry')}</button>
     </div>
   );
 
@@ -179,26 +179,26 @@ const FundDashboard = () => {
         <div>
           <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
             <PiggyBank className="w-8 h-8 text-indigo-600" />
-            Emergency Fund Builder
+            {t('ef_builder_title')}
           </h1>
-          <p className="mt-1 text-slate-500 text-sm">Build a 6-month safety net — auto-calculated from your expenses.</p>
+          <p className="mt-1 text-slate-500 text-sm">{t('ef_builder_desc')}</p>
         </div>
         <div className="flex gap-2 flex-wrap">
           <button onClick={() => { setActiveModal('setup'); setSetupIncome(wallet?.monthlyIncome || ''); setSetupExpenses(wallet?.monthlyExpenses || ''); setSetupSavings(''); }}
             className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold cursor-pointer transition-all">
-            <Settings className="w-3.5 h-3.5" /> Setup Financials
+            <Settings className="w-3.5 h-3.5" /> {t('ef_setup_financials')}
           </button>
           <button onClick={() => { loadTransactions(); setActiveModal('txns'); }}
             className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold cursor-pointer transition-all">
-            <List className="w-3.5 h-3.5" /> Transactions
+            <List className="w-3.5 h-3.5" /> {t('ef_transactions')}
           </button>
           <button onClick={() => { setAmount(''); setReason(''); setActionMsg(''); setActiveModal('deposit'); }}
             className="flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold cursor-pointer transition-all shadow-md shadow-indigo-200">
-            <Plus className="w-3.5 h-3.5" /> Add Money
+            <Plus className="w-3.5 h-3.5" /> {t('ef_add_money')}
           </button>
           <button onClick={() => { setAmount(''); setReason(''); setActionMsg(''); setActiveModal('withdraw'); }}
             className="flex items-center gap-1.5 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold cursor-pointer transition-all shadow-md shadow-rose-200">
-            <Minus className="w-3.5 h-3.5" /> Withdraw
+            <Minus className="w-3.5 h-3.5" /> {t('ef_withdraw')}
           </button>
         </div>
       </div>
@@ -208,8 +208,8 @@ const FundDashboard = () => {
         <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-amber-500 mt-0.5 shrink-0" />
           <div>
-            <p className="text-sm font-bold text-amber-800">Financial profile not set</p>
-            <p className="text-xs text-amber-700 mt-1">Click <strong>Setup Financials</strong> to enter your monthly income & expenses. Your 6-month target will be calculated automatically.</p>
+            <p className="text-sm font-bold text-amber-800">{t('ef_profile_not_set')}</p>
+            <p className="text-xs text-amber-700 mt-1">{t('ef_profile_not_set_desc')}</p>
           </div>
         </div>
       )}
@@ -223,25 +223,25 @@ const FundDashboard = () => {
             <div className="space-y-5 flex-1 w-full">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Current Balance</p>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('ef_current_balance')}</p>
                   <p className="mt-1.5 text-2xl font-extrabold text-slate-900">{fmt(bal)}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Target (6 months)</p>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('ef_target_6m')}</p>
                   <p className="mt-1.5 text-2xl font-extrabold text-slate-900">{fmt(target)}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Monthly Expenses</p>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('ef_monthly_expenses')}</p>
                   <p className="mt-1.5 text-lg font-bold text-slate-700">{fmt(wallet?.monthlyExpenses)}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Accumulated</p>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('ef_total_accumulated')}</p>
                   <p className="mt-1.5 text-lg font-bold text-slate-700">{fmt(wallet?.totalSaved)}</p>
                 </div>
               </div>
               <div>
                 <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase mb-1.5">
-                  <span>Progress</span><span>{percentage}% saved</span>
+                  <span>{t('ef_progress')}</span><span>{percentage}% {t('ef_saved')}</span>
                 </div>
                 <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
                   <div className="h-full bg-indigo-600 transition-all duration-1000" style={{ width: `${percentage}%` }} />
@@ -257,7 +257,7 @@ const FundDashboard = () => {
               </svg>
               <div className="absolute text-center">
                 <span className="text-2xl font-extrabold text-slate-900">{percentage}%</span>
-                <p className="text-[9px] font-bold text-slate-400 uppercase mt-0.5">Complete</p>
+                <p className="text-[9px] font-bold text-slate-400 uppercase mt-0.5">{t('ef_complete')}</p>
               </div>
             </div>
           </div>
@@ -265,7 +265,7 @@ const FundDashboard = () => {
           {/* Chart */}
           <div className="stripe-card bg-white p-6">
             <h3 className="text-slate-900 font-bold text-sm tracking-tight mb-4 flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-indigo-500" /> Savings Growth Trend
+              <TrendingUp className="w-4 h-4 text-indigo-500" /> {t('ef_growth_trend')}
             </h3>
             <div className="h-44">
               <ResponsiveContainer width="100%" height="100%">
@@ -279,7 +279,7 @@ const FundDashboard = () => {
                   <XAxis dataKey="label" stroke="#94A3B8" fontSize={10} tickLine={false} axisLine={false} />
                   <YAxis stroke="#94A3B8" fontSize={10} tickLine={false} axisLine={false} tickFormatter={v => `₹${(v/1000).toFixed(0)}k`} />
                   <Tooltip contentStyle={{ background: '#fff', border: '1px solid #E2E8F0', borderRadius: '12px' }}
-                    formatter={v => [fmt(v), 'Balance']} />
+                    formatter={v => [fmt(v), t('ef_balance_label', 'Balance')]} />
                   <Area type="monotone" dataKey="balance" stroke="#6366F1" strokeWidth={3} fillOpacity={1} fill="url(#efGrad)" />
                 </AreaChart>
               </ResponsiveContainer>
@@ -291,15 +291,15 @@ const FundDashboard = () => {
         <div className="space-y-6">
           {/* Auto-save mode */}
           <div className="stripe-card bg-white p-6">
-            <h3 className="text-slate-900 font-bold text-sm tracking-tight">Auto-Saving Mode</h3>
-            <p className="text-slate-500 text-xs mt-1 mb-4">Per-transaction round-up amount added to your fund.</p>
+            <h3 className="text-slate-900 font-bold text-sm tracking-tight">{t('ef_auto_saving_mode')}</h3>
+            <p className="text-slate-500 text-xs mt-1 mb-4">{t('ef_auto_saving_desc')}</p>
             <div className="flex flex-col gap-2">
               {Object.entries(AUTO_SAVE_AMOUNTS).map(([key, val]) => (
                 <button key={key} onClick={() => handleModeChange(key)}
                   className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold border text-left flex items-center justify-between transition-all cursor-pointer ${
                     mode === key ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'}`}>
-                  <span className="capitalize">{key} Mode</span>
-                  <span className={`font-extrabold ${mode === key ? 'text-indigo-700' : 'text-slate-400'}`}>₹{val}/txn</span>
+                  <span className="capitalize">{t('ef_mode_' + key, key + ' Mode')}</span>
+                  <span className={`font-extrabold ${mode === key ? 'text-indigo-700' : 'text-slate-400'}`}>₹{val}{t('ef_per_txn', '/txn')}</span>
                 </button>
               ))}
             </div>
@@ -308,12 +308,12 @@ const FundDashboard = () => {
           {/* Runway */}
           <div className="stripe-card bg-white p-6">
             <h3 className="text-slate-900 font-bold text-sm tracking-tight flex items-center gap-1.5">
-              <Shield className="w-4 h-4 text-emerald-500" /> Support Runway
+              <Shield className="w-4 h-4 text-emerald-500" /> {t('ef_support_runway')}
             </h3>
-            <p className="text-slate-500 text-xs mt-1">How many months your fund covers at current expenses.</p>
+            <p className="text-slate-500 text-xs mt-1">{t('ef_runway_desc_detail')}</p>
             <div className="mt-4 flex items-end justify-between">
               <span className="text-4xl font-extrabold text-slate-900">{runwayMonths}</span>
-              <span className="text-sm font-bold text-slate-500 mb-1">months</span>
+              <span className="text-sm font-bold text-slate-500 mb-1">{t('ef_months')}</span>
             </div>
             <div className="mt-2">
               <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
@@ -321,28 +321,28 @@ const FundDashboard = () => {
                 runwayMonths >= 3 ? 'bg-amber-50 text-amber-700 border-amber-200' :
                 'bg-rose-50 text-rose-700 border-rose-200'
               }`}>
-                {runwayMonths >= 6 ? '✅ Fully Protected' : runwayMonths >= 3 ? '⚠️ Partial Coverage' : '🔴 Low — Build Now'}
+                {runwayMonths >= 6 ? `✅ ${t('ef_fully_protected')}` : runwayMonths >= 3 ? `⚠️ ${t('ef_partial_coverage')}` : `🔴 ${t('ef_low_build_now')}`}
               </span>
             </div>
             {wallet?.monthlyExpenses > 0 && (
-              <p className="text-[11px] text-slate-400 mt-2">Based on ₹{wallet.monthlyExpenses.toLocaleString('en-IN')}/mo expenses</p>
+              <p className="text-[11px] text-slate-400 mt-2">{t('ef_based_on_expenses')}: ₹{wallet.monthlyExpenses.toLocaleString('en-IN')}</p>
             )}
           </div>
 
           {/* Quick stats */}
           <div className="stripe-card bg-indigo-950 text-white p-6">
-            <p className="text-indigo-300 text-xs font-bold uppercase tracking-wider mb-3">Fund Health</p>
+            <p className="text-indigo-300 text-xs font-bold uppercase tracking-wider mb-3">{t('ef_health')}</p>
             <div className="space-y-2.5">
               <div className="flex justify-between text-xs">
-                <span className="text-indigo-300">Remaining to Goal</span>
+                <span className="text-indigo-300">{t('ef_remaining_to_goal')}</span>
                 <span className="font-bold text-white">{fmt(Math.max(0, target - bal))}</span>
               </div>
               <div className="flex justify-between text-xs">
-                <span className="text-indigo-300">Auto-Save per Txn</span>
+                <span className="text-indigo-300">{t('ef_autosave_per_txn')}</span>
                 <span className="font-bold text-white">₹{AUTO_SAVE_AMOUNTS[mode]}</span>
               </div>
               <div className="flex justify-between text-xs">
-                <span className="text-indigo-300">Transactions</span>
+                <span className="text-indigo-300">{t('ef_transactions')}</span>
                 <span className="font-bold text-white">{wallet?.transactions?.length || 0}</span>
               </div>
             </div>
@@ -364,16 +364,16 @@ const FundDashboard = () => {
               {/* DEPOSIT modal */}
               {activeModal === 'deposit' && (
                 <>
-                  <h2 className="text-lg font-extrabold text-slate-900 mb-1 flex items-center gap-2"><Plus className="w-5 h-5 text-indigo-600" /> Add Money</h2>
-                  <p className="text-xs text-slate-500 mb-5">Manually contribute to your emergency fund.</p>
-                  <label className={labelCls}>Amount (₹)</label>
+                  <h2 className="text-lg font-extrabold text-slate-900 mb-1 flex items-center gap-2"><Plus className="w-5 h-5 text-indigo-600" /> {t('ef_add_money')}</h2>
+                  <p className="text-xs text-slate-500 mb-5">{t('ef_add_money_modal_desc')}</p>
+                  <label className={labelCls}>{t('ef_amount_inr')}</label>
                   <input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="e.g. 5000" className={`${inputCls} mb-4`} />
-                  <label className={labelCls}>Note (optional)</label>
-                  <input type="text" value={reason} onChange={e => setReason(e.target.value)} placeholder="e.g. Bonus deposit" className={`${inputCls} mb-5`} />
+                  <label className={labelCls}>{t('ef_note_optional')}</label>
+                  <input type="text" value={reason} onChange={e => setReason(e.target.value)} placeholder={t('ef_note_placeholder', 'e.g. Bonus deposit')} className={`${inputCls} mb-5`} />
                   {actionMsg && <p className={`text-xs font-semibold mb-4 ${actionMsg.startsWith('✅') ? 'text-emerald-600' : 'text-rose-600'}`}>{actionMsg}</p>}
                   <button onClick={handleDeposit} disabled={actionLoading || !amount}
                     className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold disabled:opacity-50 cursor-pointer transition-all">
-                    {actionLoading ? 'Processing…' : `Deposit ${amount ? fmt(amount) : ''}`}
+                    {actionLoading ? t('ef_processing') : `${t('ef_deposit_btn')} ${amount ? fmt(amount) : ''}`}
                   </button>
                 </>
               )}
@@ -381,17 +381,17 @@ const FundDashboard = () => {
               {/* WITHDRAW modal */}
               {activeModal === 'withdraw' && (
                 <>
-                  <h2 className="text-lg font-extrabold text-slate-900 mb-1 flex items-center gap-2"><Minus className="w-5 h-5 text-rose-600" /> Emergency Withdrawal</h2>
-                  <p className="text-xs text-slate-500 mb-1">Available: <strong>{fmt(bal)}</strong></p>
-                  <p className="text-xs text-amber-600 mb-5">⚠️ Only withdraw for genuine emergencies.</p>
-                  <label className={labelCls}>Amount (₹)</label>
+                  <h2 className="text-lg font-extrabold text-slate-900 mb-1 flex items-center gap-2"><Minus className="w-5 h-5 text-rose-600" /> {t('ef_withdraw')}</h2>
+                  <p className="text-xs text-slate-500 mb-1">{t('ef_current_balance')}: <strong>{fmt(bal)}</strong></p>
+                  <p className="text-xs text-amber-600 mb-5">⚠️ {t('ef_withdraw_warning')}</p>
+                  <label className={labelCls}>{t('ef_amount_inr')}</label>
                   <input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="e.g. 2000" className={`${inputCls} mb-4`} />
-                  <label className={labelCls}>Reason *</label>
-                  <input type="text" value={reason} onChange={e => setReason(e.target.value)} placeholder="e.g. Medical emergency" className={`${inputCls} mb-5`} />
+                  <label className={labelCls}>{t('ef_reason_required')}</label>
+                  <input type="text" value={reason} onChange={e => setReason(e.target.value)} placeholder={t('ef_reason_placeholder', 'e.g. Medical emergency')} className={`${inputCls} mb-5`} />
                   {actionMsg && <p className={`text-xs font-semibold mb-4 ${actionMsg.startsWith('✅') ? 'text-emerald-600' : 'text-rose-600'}`}>{actionMsg}</p>}
                   <button onClick={handleWithdraw} disabled={actionLoading || !amount || !reason}
                     className="w-full py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-sm font-bold disabled:opacity-50 cursor-pointer transition-all">
-                    {actionLoading ? 'Processing…' : `Withdraw ${amount ? fmt(amount) : ''}`}
+                    {actionLoading ? t('ef_processing') : `${t('ef_withdraw_btn')} ${amount ? fmt(amount) : ''}`}
                   </button>
                 </>
               )}
@@ -399,19 +399,19 @@ const FundDashboard = () => {
               {/* SETUP modal */}
               {activeModal === 'setup' && (
                 <>
-                  <h2 className="text-lg font-extrabold text-slate-900 mb-1 flex items-center gap-2"><Settings className="w-5 h-5 text-slate-600" /> Financial Setup</h2>
-                  <p className="text-xs text-slate-500 mb-5">Your target = Monthly Expenses × 6 months.</p>
-                  <label className={labelCls}>Monthly Income (₹)</label>
+                  <h2 className="text-lg font-extrabold text-slate-900 mb-1 flex items-center gap-2"><Settings className="w-5 h-5 text-slate-600" /> {t('ef_financial_setup_title')}</h2>
+                  <p className="text-xs text-slate-500 mb-5">{t('ef_target_formula')}</p>
+                  <label className={labelCls}>{t('ef_monthly_income_label')}</label>
                   <input type="number" value={setupIncome} onChange={e => setSetupIncome(e.target.value)} placeholder="e.g. 80000" className={`${inputCls} mb-4`} />
-                  <label className={labelCls}>Monthly Expenses (₹) *</label>
+                  <label className={labelCls}>{t('ef_monthly_expenses_label')}</label>
                   <input type="number" value={setupExpenses} onChange={e => setSetupExpenses(e.target.value)} placeholder="e.g. 40000" className={`${inputCls} mb-4`} />
-                  <label className={labelCls}>Current Savings / Initial Balance (₹)</label>
+                  <label className={labelCls}>{t('ef_current_savings_label')}</label>
                   <input type="number" value={setupSavings} onChange={e => setSetupSavings(e.target.value)} placeholder="e.g. 15000" className={`${inputCls} mb-2`} />
-                  {setupExpenses && <p className="text-[11px] text-indigo-600 font-semibold mb-5">📌 Calculated Target: {fmt(Number(setupExpenses) * 6)}</p>}
+                  {setupExpenses && <p className="text-[11px] text-indigo-600 font-semibold mb-5">📌 {t('ef_calculated_target')}: {fmt(Number(setupExpenses) * 6)}</p>}
                   {actionMsg && <p className={`text-xs font-semibold mb-4 ${actionMsg.startsWith('✅') ? 'text-emerald-600' : 'text-rose-600'}`}>{actionMsg}</p>}
                   <button onClick={handleSetup} disabled={actionLoading || !setupExpenses}
                     className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold disabled:opacity-50 cursor-pointer transition-all">
-                    {actionLoading ? 'Saving…' : 'Save Financial Setup'}
+                    {actionLoading ? t('ef_saving') : t('ef_save_setup_btn')}
                   </button>
                 </>
               )}
@@ -419,9 +419,9 @@ const FundDashboard = () => {
               {/* TRANSACTIONS modal */}
               {activeModal === 'txns' && (
                 <>
-                  <h2 className="text-lg font-extrabold text-slate-900 mb-5 flex items-center gap-2"><List className="w-5 h-5 text-slate-600" /> Transaction History</h2>
+                  <h2 className="text-lg font-extrabold text-slate-900 mb-5 flex items-center gap-2"><List className="w-5 h-5 text-slate-600" /> {t('ef_txn_history_title')}</h2>
                   {transactions.length === 0 ? (
-                    <p className="text-sm text-slate-400 text-center py-8">No transactions yet. Add money to get started.</p>
+                    <p className="text-sm text-slate-400 text-center py-8">{t('ef_no_txns')}</p>
                   ) : (
                     <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
                       {transactions.map((tx, i) => (

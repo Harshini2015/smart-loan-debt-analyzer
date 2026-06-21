@@ -191,7 +191,7 @@ const Navbar = () => {
               >
                 <Sparkles className="w-3.5 h-3.5 text-indigo-600 animate-pulse" />
                 <span className="hidden sm:inline">
-                  {language === 'en' ? 'AI Insights' : 'ಎಐ ಒಳನೋಟಗಳು'}
+                  {t('aiInsights')}
                 </span>
               </button>
 
@@ -277,10 +277,10 @@ const Navbar = () => {
                         {/* Header */}
                         <div className="pb-2 border-b border-slate-100 flex items-center justify-between">
                           <h4 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">
-                            {language === 'en' ? 'Notifications' : 'ಅಧಿಸೂಚನೆಗಳು'}
+                            {t('notifications')}
                             {unreadCount > 0 && (
                               <span className="ml-2 text-[9px] bg-rose-500 text-white font-bold px-1.5 py-0.5 rounded-full">
-                                {unreadCount} {language === 'en' ? 'new' : 'ಹೊಸ'}
+                                {unreadCount} {t('new')}
                               </span>
                             )}
                           </h4>
@@ -289,7 +289,7 @@ const Navbar = () => {
                               onClick={clearAllNotifications}
                               className="text-[9px] font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-1.5 py-0.5 rounded cursor-pointer transition-colors"
                             >
-                              {language === 'en' ? 'Clear All' : 'ಎಲ್ಲ ಅಳಿಸು'}
+                              {t('clearAll')}
                             </button>
                           )}
                         </div>
@@ -329,7 +329,7 @@ const Navbar = () => {
                             ))
                           ) : (
                             <div className="py-6 text-center text-xs text-slate-400 font-medium">
-                              {language === 'en' ? 'All caught up! 🎉' : 'ಎಲ್ಲವೂ ಪೂರ್ಣ! 🎉'}
+                              {t('allCaughtUp')}
                             </div>
                           )}
                         </div>
@@ -364,7 +364,7 @@ const Navbar = () => {
                       >
                         <div className="px-3 py-2 border-b border-slate-100">
                           <p className="text-sm font-semibold text-slate-900 truncate">
-                            {language === 'en' ? 'Hello' : 'ನಮಸ್ಕಾರ'}, {user.name || 'User'}!
+                            {t('hello')}, {user.name || 'User'}!
                           </p>
                           <p className="text-xs text-slate-500 truncate">{user.email}</p>
                           <span className="inline-block mt-1 px-2 py-0.5 text-[10px] font-semibold bg-slate-100 text-slate-700 rounded-full">
@@ -377,14 +377,14 @@ const Navbar = () => {
                             className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg text-left"
                           >
                             <Sparkles className="w-4 h-4 text-indigo-600" />
-                            <span>{language === 'en' ? 'Ask AI Assistant' : 'ಎಐ ಸಹಾಯ ಕೇಳಿ'}</span>
+                            <span>{t('askAiAssistant')}</span>
                           </button>
                           <button
                             onClick={handleLogout}
                             className="w-full flex items-center gap-2 px-3 py-2 text-sm text-rose-600 hover:bg-rose-50 rounded-lg text-left"
                           >
                             <LogOut className="w-4 h-4" />
-                            <span>{language === 'en' ? 'Sign Out' : 'ಲಾಗ್ ಔಟ್'}</span>
+                            <span>{t('logout')}</span>
                           </button>
                         </div>
                       </motion.div>
@@ -461,7 +461,7 @@ const Navbar = () => {
                 {/* Language selection in mobile */}
                 <div className="flex flex-col gap-1.5 px-1">
                   <span className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">
-                    {language === 'en' ? 'Select Language' : language === 'hi' ? 'भाषा चुनें' : 'ಭಾಷೆಯನ್ನು ಆರಿಸಿ'}
+                    {t('selectLanguage')}
                   </span>
                   <div className="grid grid-cols-3 gap-2">
                     <button
@@ -503,7 +503,7 @@ const Navbar = () => {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-slate-900">
-                      {language === 'en' ? 'Hello' : 'ನಮಸ್ಕಾರ'}, {user?.name || 'User'}!
+                      {t('hello')}, {user?.name || 'User'}!
                     </p>
                     <p className="text-xs text-slate-500">{user?.email}</p>
                   </div>
@@ -513,14 +513,14 @@ const Navbar = () => {
                   className="w-full flex items-center justify-center gap-2 py-2 px-4 bg-indigo-50 border border-indigo-100 text-indigo-700 rounded-xl text-sm font-semibold hover:bg-indigo-100"
                 >
                   <Sparkles className="w-4 h-4" />
-                  <span>{language === 'en' ? 'AI Insights Panel' : 'ಎಐ ಒಳನೋಟ'}</span>
+                  <span>{t('aiInsightsPanel')}</span>
                 </button>
                 <button
                   onClick={() => { setMobileMenuOpen(false); handleLogout(); }}
                   className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-rose-50 text-rose-600 rounded-xl text-sm font-semibold hover:bg-rose-100"
                 >
                   <LogOut className="w-4 h-4" />
-                  <span>{language === 'en' ? 'Log Out' : 'ಲಾಗ್ ಔಟ್'}</span>
+                  <span>{t('logout')}</span>
                 </button>
               </div>
             </motion.div>

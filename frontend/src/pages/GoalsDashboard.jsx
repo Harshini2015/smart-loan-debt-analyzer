@@ -30,6 +30,7 @@ const labelCls = 'block text-xs font-bold text-slate-500 uppercase tracking-wide
 
 // ── GoalCard ──────────────────────────────────────────────────────────────────
 const GoalCard = ({ goal, onEdit, onDelete, onComplete }) => {
+  const { t } = useLanguage();
   const pct         = goal.percentage ?? Math.min(100, Math.round(((goal.currentSaved || 0) / goal.targetAmount) * 100));
   const remaining   = goal.remaining  ?? Math.max(0, goal.targetAmount - (goal.currentSaved || 0));
   const months      = goal.monthsNeeded;
@@ -45,7 +46,7 @@ const GoalCard = ({ goal, onEdit, onDelete, onComplete }) => {
     >
       {isCompleted && (
         <div className="absolute top-3 right-3">
-          <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full text-[10px] font-bold">✅ Completed</span>
+          <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full text-[10px] font-bold">✅ {t('g_completed')}</span>
         </div>
       )}
 
@@ -54,25 +55,25 @@ const GoalCard = ({ goal, onEdit, onDelete, onComplete }) => {
           <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-2xl shrink-0">{goal.emoji || '🎯'}</div>
           <div className="flex-1 min-w-0">
             <h3 className="font-extrabold text-slate-900 text-sm truncate">{goal.goalName}</h3>
-            <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mt-0.5">{goal.category}</p>
+            <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mt-0.5">{t('g_cat_' + goal.category, goal.category)}</p>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3 mb-4">
           <div className="bg-slate-50 rounded-xl p-3">
-            <p className="text-[10px] font-bold text-slate-400 uppercase">Target</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase">{t('g_target')}</p>
             <p className="text-sm font-extrabold text-slate-900 mt-0.5">{fmt(goal.targetAmount)}</p>
           </div>
           <div className="bg-slate-50 rounded-xl p-3">
-            <p className="text-[10px] font-bold text-slate-400 uppercase">Saved</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase">{t('g_saved')}</p>
             <p className="text-sm font-extrabold text-emerald-600 mt-0.5">{fmt(goal.currentSaved || 0)}</p>
           </div>
           <div className="bg-slate-50 rounded-xl p-3">
-            <p className="text-[10px] font-bold text-slate-400 uppercase">Monthly</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase">{t('g_monthly')}</p>
             <p className="text-sm font-extrabold text-indigo-600 mt-0.5">{fmt(goal.monthlySavingCapacity)}</p>
           </div>
           <div className="bg-slate-50 rounded-xl p-3">
-            <p className="text-[10px] font-bold text-slate-400 uppercase">Remaining</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase">{t('g_remaining')}</p>
             <p className="text-sm font-extrabold text-rose-600 mt-0.5">{fmt(remaining)}</p>
           </div>
         </div>
@@ -81,15 +82,15 @@ const GoalCard = ({ goal, onEdit, onDelete, onComplete }) => {
           <div className="mb-4 text-xs text-slate-500 flex items-center gap-1.5">
             <span>⏱</span>
             <span>
-              Est. completion: <strong className="text-slate-700">{estDate.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' })}</strong>
-              {months != null && ` (~${months} month${months !== 1 ? 's' : ''})`}
+              {t('g_est_completion')}: <strong className="text-slate-700">{estDate.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' })}</strong>
+              {months != null && ` (~${months} ${months === 1 ? t('g_month_singular') : t('g_months_plural')})`}
             </span>
           </div>
         )}
 
         <div>
           <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase mb-1.5">
-            <span>Progress</span><span>{pct}%</span>
+            <span>{t('g_progress')}</span><span>{pct}%</span>
           </div>
           <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
             <div className={`h-full transition-all duration-700 ${isCompleted ? 'bg-emerald-500' : 'bg-indigo-600'}`} style={{ width: `${pct}%` }} />
@@ -99,17 +100,17 @@ const GoalCard = ({ goal, onEdit, onDelete, onComplete }) => {
 
       {!isCompleted && (
         <div className="flex gap-2 mt-5 pt-4 border-t border-slate-100">
-          <button onClick={() => onEdit(goal)} title="Edit"
+          <button onClick={() => onEdit(goal)} title={t('g_edit')}
             className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg cursor-pointer transition-all">
-            <Pencil className="w-3 h-3" /> Edit
+            <Pencil className="w-3 h-3" /> {t('g_edit')}
           </button>
-          <button onClick={() => onComplete(goal._id)} title="Mark Complete"
+          <button onClick={() => onComplete(goal._id)} title={t('g_complete')}
             className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg cursor-pointer transition-all">
-            <CheckCircle className="w-3 h-3" /> Complete
+            <CheckCircle className="w-3 h-3" /> {t('g_complete')}
           </button>
-          <button onClick={() => onDelete(goal._id)} title="Delete"
+          <button onClick={() => onDelete(goal._id)} title={t('g_delete')}
             className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg cursor-pointer transition-all ml-auto">
-            <Trash2 className="w-3 h-3" /> Delete
+            <Trash2 className="w-3 h-3" /> {t('g_delete')}
           </button>
         </div>
       )}
@@ -119,6 +120,7 @@ const GoalCard = ({ goal, onEdit, onDelete, onComplete }) => {
 
 // ── GoalForm Modal ────────────────────────────────────────────────────────────
 const GoalFormModal = ({ initial, onSave, onClose, loading, error }) => {
+  const { t } = useLanguage();
   const [form, setForm] = useState(initial || EMPTY_FORM);
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
@@ -138,12 +140,12 @@ const GoalFormModal = ({ initial, onSave, onClose, loading, error }) => {
 
         <h2 className="text-lg font-extrabold text-slate-900 mb-5 flex items-center gap-2">
           <Target className="w-5 h-5 text-indigo-600" />
-          {isEdit ? 'Edit Goal' : 'Create New Goal'}
+          {isEdit ? t('g_edit_goal') : t('g_create_goal')}
         </h2>
 
         {/* Emoji picker */}
         <div className="mb-4">
-          <label className={labelCls}>Icon</label>
+          <label className={labelCls}>{t('g_icon')}</label>
           <div className="flex flex-wrap gap-2">
             {EMOJIS.map(e => (
               <button key={e} onClick={() => set('emoji', e)} type="button"
@@ -156,36 +158,36 @@ const GoalFormModal = ({ initial, onSave, onClose, loading, error }) => {
 
         <div className="grid grid-cols-2 gap-4">
           <div className="col-span-2">
-            <label className={labelCls}>Goal Name *</label>
+            <label className={labelCls}>{t('g_goal_name')}</label>
             <input className={inputCls} value={form.goalName} onChange={e => set('goalName', e.target.value)} placeholder="e.g. Electric Bike, Goa Trip" />
           </div>
           <div>
-            <label className={labelCls}>Target Amount (₹) *</label>
+            <label className={labelCls}>{t('g_target_amount')}</label>
             <input type="number" className={inputCls} value={form.targetAmount} onChange={e => set('targetAmount', e.target.value)} placeholder="e.g. 80000" />
           </div>
           <div>
-            <label className={labelCls}>Monthly Contribution (₹) *</label>
+            <label className={labelCls}>{t('g_monthly_contribution')}</label>
             <input type="number" className={inputCls} value={form.monthlySavingCapacity} onChange={e => set('monthlySavingCapacity', e.target.value)} placeholder="e.g. 5000" />
           </div>
           <div>
-            <label className={labelCls}>Already Saved (₹)</label>
+            <label className={labelCls}>{t('g_already_saved')}</label>
             <input type="number" className={inputCls} value={form.currentSaved} onChange={e => set('currentSaved', e.target.value)} placeholder="e.g. 10000" />
           </div>
           <div>
-            <label className={labelCls}>Category</label>
+            <label className={labelCls}>{t('g_category')}</label>
             <select className={inputCls} value={form.category} onChange={e => set('category', e.target.value)}>
-              {CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+              {CATEGORIES.map(c => <option key={c.value} value={c.value}>{t('g_cat_' + c.value, c.label)}</option>)}
             </select>
           </div>
           <div className="col-span-2">
-            <label className={labelCls}>Target Date (optional)</label>
+            <label className={labelCls}>{t('g_target_date')}</label>
             <input type="date" className={inputCls} value={form.targetDate} onChange={e => set('targetDate', e.target.value)} />
           </div>
         </div>
 
         {derivedTarget && (
           <p className="text-xs text-indigo-600 font-semibold mt-3">
-            📌 At ₹{Number(form.monthlySavingCapacity).toLocaleString('en-IN')}/month → approximately <strong>{derivedTarget} months</strong> to reach your goal.
+            📌 At ₹{Number(form.monthlySavingCapacity).toLocaleString('en-IN')}/month → approximately <strong>{derivedTarget} {derivedTarget === 1 ? t('g_month_singular') : t('g_months_plural')}</strong> to reach your goal.
           </p>
         )}
 
@@ -197,7 +199,7 @@ const GoalFormModal = ({ initial, onSave, onClose, loading, error }) => {
 
         <button onClick={() => onSave(form)} disabled={loading}
           className="mt-5 w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold disabled:opacity-50 cursor-pointer transition-all flex items-center justify-center gap-2">
-          {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving…</> : (isEdit ? 'Save Changes' : 'Create Goal')}
+          {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> {t('g_saving')}</> : (isEdit ? t('g_save_changes') : t('g_create_goal_btn'))}
         </button>
       </motion.div>
     </motion.div>
@@ -233,11 +235,11 @@ const GoalsDashboard = () => {
 
   const handleSave = async (form) => {
     setFormError('');
-    if (!form.goalName?.trim())           return setFormError('Goal name is required.');
+    if (!form.goalName?.trim())           return setFormError(t('g_name_required'));
     if (!form.targetAmount || Number(form.targetAmount) <= 0)
-                                           return setFormError('Target amount must be greater than 0.');
+                                           return setFormError(t('g_target_gt_0'));
     if (!form.monthlySavingCapacity || Number(form.monthlySavingCapacity) <= 0)
-                                           return setFormError('Monthly contribution must be greater than 0.');
+                                           return setFormError(t('g_contribution_gt_0'));
 
     setSaving(true);
     try {
@@ -254,13 +256,13 @@ const GoalsDashboard = () => {
 
       if (isEdit) {
         await goalService.update(modal._id, payload);
-        showToast(`✅ Goal "${form.goalName}" updated!`);
+        showToast(`✅ ${t('g_toast_updated', 'Goal updated!')}`);
       } else {
         await goalService.create(payload);
         window.dispatchEvent(new CustomEvent('add-notification', {
           detail: { text: `🎯 Goal created: ${form.goalName} (Target: ${fmt(form.targetAmount)})` }
         }));
-        showToast(`🎯 Goal "${form.goalName}" created!`);
+        showToast(`🎯 ${t('g_toast_created', 'Goal created!')}`);
       }
       setModal(null);
       await loadGoals();
@@ -272,23 +274,23 @@ const GoalsDashboard = () => {
   };
 
   const handleDelete = async (goalId) => {
-    if (!window.confirm('Delete this goal? This cannot be undone.')) return;
+    if (!window.confirm(t('g_delete_confirm'))) return;
     try {
       await goalService.remove(goalId);
-      showToast('🗑️ Goal deleted.');
+      showToast(t('g_toast_deleted'));
       setGoals(g => g.filter(x => x._id !== goalId));
     } catch (e) {
-      showToast('Failed to delete goal.');
+      showToast(t('g_toast_failed_delete'));
     }
   };
 
   const handleComplete = async (goalId) => {
     try {
       await goalService.markComplete(goalId);
-      showToast('🎉 Goal marked as complete!');
+      showToast(t('g_toast_completed'));
       await loadGoals();
     } catch (e) {
-      showToast('Failed to mark complete.');
+      showToast(t('g_toast_failed_complete'));
     }
   };
 
@@ -311,13 +313,13 @@ const GoalsDashboard = () => {
         <div>
           <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
             <Target className="w-8 h-8 text-indigo-600" />
-            My Goals
+            {t('g_builder_title')}
           </h1>
-          <p className="mt-1 text-slate-500 text-sm">Set savings goals, track progress, and hit every milestone.</p>
+          <p className="mt-1 text-slate-500 text-sm">{t('g_builder_desc')}</p>
         </div>
         <button onClick={() => { setFormError(''); setModal('create'); }}
           className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow-md shadow-indigo-200 cursor-pointer transition-all active:scale-95">
-          <Plus className="w-4 h-4" /> New Goal
+          <Plus className="w-4 h-4" /> {t('g_new_goal')}
         </button>
       </div>
 
@@ -325,9 +327,9 @@ const GoalsDashboard = () => {
       {goals.length > 0 && (
         <div className="grid grid-cols-3 gap-4">
           {[
-            { label: 'Total Goals', val: goals.length, color: 'text-indigo-600' },
-            { label: 'Active', val: activeGoals.length, color: 'text-amber-600' },
-            { label: 'Completed', val: completedGoals.length, color: 'text-emerald-600' },
+            { label: t('g_total_goals'), val: goals.length, color: 'text-indigo-600' },
+            { label: t('g_active'), val: activeGoals.length, color: 'text-amber-600' },
+            { label: t('g_completed'), val: completedGoals.length, color: 'text-emerald-600' },
           ].map(s => (
             <div key={s.label} className="stripe-card bg-white p-4 text-center">
               <p className={`text-2xl font-extrabold ${s.color}`}>{s.val}</p>
@@ -347,11 +349,11 @@ const GoalsDashboard = () => {
           {activeGoals.length === 0 && completedGoals.length === 0 ? (
             <div className="stripe-card bg-slate-50 border-2 border-dashed border-slate-200 p-12 text-center">
               <Target className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-              <p className="text-slate-500 font-semibold text-sm mb-2">No goals yet</p>
-              <p className="text-slate-400 text-xs mb-6">Create your first savings goal to get started.</p>
+              <p className="text-slate-500 font-semibold text-sm mb-2">{t('g_no_goals')}</p>
+              <p className="text-slate-400 text-xs mb-6">{t('g_no_goals_desc')}</p>
               <button onClick={() => { setFormError(''); setModal('create'); }}
                 className="px-5 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold cursor-pointer hover:bg-indigo-700">
-                + Create First Goal
+                {t('g_create_first')}
               </button>
             </div>
           ) : (
@@ -365,7 +367,7 @@ const GoalsDashboard = () => {
               )}
               {completedGoals.length > 0 && (
                 <>
-                  <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider">Completed Goals</h2>
+                  <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider">{t('g_completed_goals')}</h2>
                   <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {completedGoals.map(g => (
                       <GoalCard key={g._id} goal={g} onEdit={handleEdit} onDelete={handleDelete} onComplete={handleComplete} />

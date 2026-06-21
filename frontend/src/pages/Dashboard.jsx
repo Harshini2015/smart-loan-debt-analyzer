@@ -244,7 +244,8 @@ export default function Dashboard() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-200 pb-6">
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight text-black flex items-center gap-2.5 font-sans">
-            {t('welcomeJohn')}
+            {t('welcomeUser')
+              .replace('{name}', user?.name || 'User')}
             <span className="text-xs bg-indigo-100 text-indigo-800 border border-indigo-200 px-3 py-1 rounded-full font-medium tracking-normal">
               {t('premiumAccount')}
             </span>
